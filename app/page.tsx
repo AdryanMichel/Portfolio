@@ -43,6 +43,16 @@ const translations = {
     },
     skills: {
       title: "Experiência Técnica",
+      levels: {
+        junior: "Junior",
+        pleno: "Pleno",
+        senior: "Senior",
+      },
+      progress: {
+        junior: "Nível Junior",
+        pleno: "Nível Pleno",
+        senior: "Nível Senior",
+      },
       years: "anos de experiência",
       year: "ano de experiência",
     },
@@ -90,6 +100,16 @@ const translations = {
     },
     skills: {
       title: "Technical Experience",
+      levels: {
+        junior: "Junior",
+        pleno: "Mid-level",
+        senior: "Senior",
+      },
+      progress: {
+        junior: "Junior Level",
+        pleno: "Mid-level",
+        senior: "Senior Level",
+      },
       years: "years of experience",
       year: "year of experience",
     },
@@ -105,20 +125,18 @@ const translations = {
   },
 }
 
+// Função para calcular nível baseado nos anos de experiência
+const calculateLevel = (years: number) => {
+  if (years <= 2) return { level: "junior", progress: (years / 2) * 100 }
+  if (years <= 5) return { level: "pleno", progress: ((years - 2) / 3) * 100 }
+  return { level: "senior", progress: Math.min(((years - 5) / 5) * 100, 100) }
+}
+
 export default function Portfolio() {
   const [language, setLanguage] = useState<Language>("pt")
   const [theme, setTheme] = useState<Theme>("dark")
 
   const t = translations[language]
-
-  const skills = [
-    { name: "Java", years: 3, icon: Code, color: theme === "dark" ? "bg-orange-500" : "bg-orange-600" },
-    { name: "Python", years: 3, icon: Code, color: theme === "dark" ? "bg-green-500" : "bg-green-600" },
-    { name: "JavaScript", years: 3, icon: Globe, color: theme === "dark" ? "bg-yellow-500" : "bg-yellow-600" },
-    { name: "C", years: 3, icon: Code, color: theme === "dark" ? "bg-purple-500" : "bg-purple-600" },
-    { name: "Luau", years: 7, icon: Gamepad2, color: theme === "dark" ? "bg-red-500" : "bg-red-600" },
-    { name: "HTML", years: 4, icon: Globe, color: theme === "dark" ? "bg-orange-600" : "bg-orange-700" },
-  ]
 
   const handleEmailContact = () => {
     window.location.href = "mailto:adryanmichel.profissional@gmail.com"
@@ -179,6 +197,33 @@ export default function Portfolio() {
       color: "bg-orange-500",
     },
   ]
+
+  const skills = [
+    { name: "Java", years: 3, icon: Code, color: currentTheme.dark ? "bg-orange-500" : "bg-orange-600" },
+    { name: "Python", years: 3, icon: Code, color: currentTheme.dark ? "bg-green-500" : "bg-green-600" },
+    { name: "JavaScript", years: 3, icon: Globe, color: currentTheme.dark ? "bg-yellow-500" : "bg-yellow-600" },
+    { name: "C", years: 3, icon: Code, color: currentTheme.dark ? "bg-purple-500" : "bg-purple-600" },
+    { name: "Luau", years: 7, icon: Gamepad2, color: currentTheme.dark ? "bg-red-500" : "bg-red-600" },
+    { name: "HTML", years: 4, icon: Globe, color: currentTheme.dark ? "bg-orange-600" : "bg-orange-700" },
+  ]
+
+  const getLevelColor = (level: string, theme: string) => {
+    const colors = {
+      junior: theme === "dark" ? "bg-blue-500" : "bg-blue-600",
+      pleno: theme === "dark" ? "bg-yellow-500" : "bg-yellow-600",
+      senior: theme === "dark" ? "bg-green-500" : "bg-green-600",
+    }
+    return colors[level as keyof typeof colors]
+  }
+
+  const getLevelTextColor = (level: string, theme: string) => {
+    const colors = {
+      junior: theme === "dark" ? "text-blue-400" : "text-blue-600",
+      pleno: theme === "dark" ? "text-yellow-400" : "text-yellow-600",
+      senior: theme === "dark" ? "text-green-400" : "text-green-600",
+    }
+    return colors[level as keyof typeof colors]
+  }
 
   return (
     <div className={`min-h-screen ${currentTheme.bg}`}>
@@ -306,35 +351,121 @@ export default function Portfolio() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {skills.map((skill, index) => {
               const Icon = skill.icon
+              const levelData = calculateLevel(skill.years)
+              const levelColor = getLevelColor(levelData.level, theme)
+              const levelTextColor = getLevelTextColor(levelData.level, theme)
+
               return (
                 <Card
                   key={skill.name}
                   className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 transform hover:scale-105`}
                 >
                   <CardHeader className="pb-3">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 mb-3">
                       <div className={`p-2 rounded-lg ${skill.color}`}>
                         <Icon className="w-6 h-6 text-white" />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <CardTitle className={`${currentTheme.text} text-xl`}>{skill.name}</CardTitle>
                         <CardDescription className={currentTheme.textSecondary}>
                           {skill.years} {skill.years === 1 ? t.skills.year : t.skills.years}
                         </CardDescription>
                       </div>
                     </div>
+
+                    {/* Level Badge */}
+                    <div className="flex items-center justify-between">
+                      <span className={`px-3 py-1 rounded-full text-sm font-semibold ${levelColor} text-white`}>
+                        {t.skills.levels[levelData.level as keyof typeof t.skills.levels]}
+                      </span>
+                      <span className={`text-sm font-medium ${levelTextColor}`}>{Math.round(levelData.progress)}%</span>
+                    </div>
                   </CardHeader>
+
                   <CardContent>
-                    <div className={`w-full ${theme === "dark" ? "bg-white/20" : "bg-gray-300"} rounded-full h-2`}>
-                      <div
-                        className={`h-2 rounded-full ${skill.color} transition-all duration-1000`}
-                        style={{ width: `${Math.min((skill.years / 7) * 100, 100)}%` }}
-                      />
+                    {/* Level Progress Bar */}
+                    <div className="mb-3">
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className={currentTheme.textSecondary}>
+                          {t.skills.progress[levelData.level as keyof typeof t.skills.progress]}
+                        </span>
+                      </div>
+                      <div className={`w-full ${theme === "dark" ? "bg-white/20" : "bg-gray-300"} rounded-full h-3`}>
+                        <div
+                          className={`h-3 rounded-full ${levelColor} transition-all duration-1000 relative overflow-hidden`}
+                          style={{ width: `${levelData.progress}%` }}
+                        >
+                          <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Experience Timeline */}
+                    <div className="flex justify-between text-xs">
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={`w-2 h-2 rounded-full ${levelData.level === "junior" ? levelColor : theme === "dark" ? "bg-green-500" : "bg-green-600"}`}
+                        ></div>
+                        <span className={`mt-1 ${currentTheme.textMuted}`}>{t.skills.levels.junior}</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={`w-2 h-2 rounded-full ${levelData.level === "pleno" ? levelColor : levelData.level === "senior" ? (theme === "dark" ? "bg-green-500" : "bg-green-600") : (theme === "dark" ? "bg-white/30" : "bg-gray-400")}`}
+                        ></div>
+                        <span className={`mt-1 ${currentTheme.textMuted}`}>{t.skills.levels.pleno}</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={`w-2 h-2 rounded-full ${levelData.level === "senior" ? levelColor : theme === "dark" ? "bg-white/30" : "bg-gray-400"}`}
+                        ></div>
+                        <span className={`mt-1 ${currentTheme.textMuted}`}>{t.skills.levels.senior}</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
               )
             })}
+          </div>
+
+          {/* Level Legend */}
+          <div className="mt-12 max-w-4xl mx-auto">
+            <div className={`${currentTheme.card} rounded-lg p-6`}>
+              <h3 className={`text-xl font-semibold ${currentTheme.text} mb-4 text-center`}>
+                {language === "pt" ? "Legenda dos Níveis" : "Level Legend"}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div
+                    className={`inline-block px-4 py-2 rounded-full ${theme === "dark" ? "bg-blue-500" : "bg-blue-600"} text-white font-semibold mb-2`}
+                  >
+                    {t.skills.levels.junior}
+                  </div>
+                  <p className={`text-sm ${currentTheme.textSecondary}`}>
+                    {language === "pt" ? "0-2 anos de experiência" : "0-2 years of experience"}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div
+                    className={`inline-block px-4 py-2 rounded-full ${theme === "dark" ? "bg-yellow-500" : "bg-yellow-600"} text-white font-semibold mb-2`}
+                  >
+                    {t.skills.levels.pleno}
+                  </div>
+                  <p className={`text-sm ${currentTheme.textSecondary}`}>
+                    {language === "pt" ? "2-5 anos de experiência" : "2-5 years of experience"}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div
+                    className={`inline-block px-4 py-2 rounded-full ${theme === "dark" ? "bg-green-500" : "bg-green-600"} text-white font-semibold mb-2`}
+                  >
+                    {t.skills.levels.senior}
+                  </div>
+                  <p className={`text-sm ${currentTheme.textSecondary}`}>
+                    {language === "pt" ? "5+ anos de experiência" : "5+ years of experience"}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
