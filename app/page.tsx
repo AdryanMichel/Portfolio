@@ -4,7 +4,27 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
-import { Github, Mail, MessageCircle, Code, Globe, Gamepad2, Sun, Moon, Languages } from "lucide-react"
+import {
+  Github,
+  Mail,
+  MessageCircle,
+  Code,
+  Globe,
+  Gamepad2,
+  Sun,
+  Moon,
+  Languages,
+  GraduationCap,
+  MapPin,
+  Calendar,
+  Award,
+  BookOpen,
+  Target,
+  Settings,
+  Database,
+  Layers,
+  GitBranch,
+} from "lucide-react"
 
 type Language = "pt" | "en"
 type Theme = "dark" | "light"
@@ -13,13 +33,16 @@ const translations = {
   pt: {
     nav: {
       about: "Sobre",
+      education: "Educação",
       skills: "Habilidades",
+      technologies: "Tecnologias",
       projects: "Projetos",
       contact: "Contato",
     },
     hero: {
       title: "Desenvolvedor Full Stack",
       age: "18 anos",
+      location: "Rio Claro, SP",
       discord: "Discord: gm_whitinho",
       contact: "Entre em Contato",
       github: "GitHub",
@@ -30,7 +53,27 @@ const translations = {
     about: {
       title: "Sobre Mim",
       description:
-        "Desenvolvedor Full Stack apaixonado por criar soluções inovadoras e eficientes. Sempre em busca de novos desafios e oportunidades para crescer profissionalmente.",
+        "Desenvolvedor Full Stack apaixonado por criar soluções inovadoras e eficientes. Atualmente cursando Desenvolvimento de Sistemas, sempre em busca de novos desafios e oportunidades para crescer profissionalmente.",
+    },
+    education: {
+      title: "Formação Acadêmica",
+      current: "Cursando",
+      school: "João Professor Batista Leme",
+      course: "Desenvolvimento de Sistemas",
+      year: "3º Ano do Ensino Médio",
+      period: "2022 - 2025",
+      status: "Em andamento",
+      achievements: "Conquistas Acadêmicas",
+      achievementsList: [
+        "Foco em programação e desenvolvimento web",
+        "Projetos práticos em diversas linguagens",
+        "Participação ativa em atividades técnicas",
+      ],
+      languages: "Idiomas",
+      portuguese: "Português",
+      english: "Inglês",
+      nativeLevel: "Nativo",
+      intermediateLevel: "Intermediário",
     },
     projects: {
       title: "Meus Projetos",
@@ -42,7 +85,7 @@ const translations = {
       githubDescription: "Confira meus repositórios e contribuições no GitHub",
     },
     skills: {
-      title: "Experiência Técnica",
+      title: "Linguagens de Programação",
       levels: {
         junior: "Junior",
         pleno: "Pleno",
@@ -55,6 +98,28 @@ const translations = {
       },
       years: "anos de experiência",
       year: "ano de experiência",
+    },
+    technologies: {
+      title: "Tecnologias & Ferramentas",
+      frontend: "Frontend",
+      backend: "Backend",
+      tools: "Ferramentas",
+      databases: "Banco de Dados",
+    },
+    goals: {
+      title: "Objetivos Profissionais",
+      shortTerm: "Curto Prazo",
+      longTerm: "Longo Prazo",
+      shortTermGoals: [
+        "Concluir o curso de Desenvolvimento de Sistemas",
+        "Conseguir primeira oportunidade como desenvolvedor",
+        "Aprofundar conhecimentos em React e Node.js",
+      ],
+      longTermGoals: [
+        "Tornar-se desenvolvedor Full Stack sênior",
+        "Liderar projetos de desenvolvimento",
+        "Contribuir para projetos open source",
+      ],
     },
     contact: {
       title: "Vamos Trabalhar Juntos?",
@@ -70,13 +135,16 @@ const translations = {
   en: {
     nav: {
       about: "About",
+      education: "Education",
       skills: "Skills",
+      technologies: "Technologies",
       projects: "Projects",
       contact: "Contact",
     },
     hero: {
       title: "Full Stack Developer",
       age: "18 years old",
+      location: "Rio Claro, SP",
       discord: "Discord: gm_whitinho",
       contact: "Get In Touch",
       github: "GitHub",
@@ -87,7 +155,27 @@ const translations = {
     about: {
       title: "About Me",
       description:
-        "Full Stack developer passionate about creating innovative and efficient solutions. Always seeking new challenges and opportunities for professional growth.",
+        "Full Stack developer passionate about creating innovative and efficient solutions. Currently studying Systems Development, always seeking new challenges and opportunities for professional growth.",
+    },
+    education: {
+      title: "Academic Background",
+      current: "Currently studying",
+      school: "João Professor Batista Leme",
+      course: "Systems Development",
+      year: "3rd Year of High School",
+      period: "2022 - 2025",
+      status: "In progress",
+      achievements: "Academic Achievements",
+      achievementsList: [
+        "Focus on programming and web development",
+        "Practical projects in various languages",
+        "Active participation in technical activities",
+      ],
+      languages: "Languages",
+      portuguese: "Portuguese",
+      english: "English",
+      nativeLevel: "Native",
+      intermediateLevel: "Intermediate",
     },
     projects: {
       title: "My Projects",
@@ -99,7 +187,7 @@ const translations = {
       githubDescription: "Check out my repositories and contributions on GitHub",
     },
     skills: {
-      title: "Technical Experience",
+      title: "Programming Languages",
       levels: {
         junior: "Junior",
         pleno: "Mid-level",
@@ -112,6 +200,28 @@ const translations = {
       },
       years: "years of experience",
       year: "year of experience",
+    },
+    technologies: {
+      title: "Technologies & Tools",
+      frontend: "Frontend",
+      backend: "Backend",
+      tools: "Tools",
+      databases: "Databases",
+    },
+    goals: {
+      title: "Professional Goals",
+      shortTerm: "Short Term",
+      longTerm: "Long Term",
+      shortTermGoals: [
+        "Complete Systems Development course",
+        "Get first opportunity as a developer",
+        "Deepen knowledge in React and Node.js",
+      ],
+      longTermGoals: [
+        "Become a senior Full Stack developer",
+        "Lead development projects",
+        "Contribute to open source projects",
+      ],
     },
     contact: {
       title: "Let's Work Together?",
@@ -126,9 +236,15 @@ const translations = {
 }
 
 // Função para calcular nível baseado nos anos de experiência
-const calculateLevel = (years: number) => {
+const calculateLevel = (years: number, skillName?: string) => {
   if (years <= 2) return { level: "junior", progress: (years / 2) * 100 }
   if (years <= 5) return { level: "pleno", progress: ((years - 2) / 3) * 100 }
+
+  // Para Luau com 7 anos, mostrar 100% no nível Senior
+  if (skillName === "Luau" && years >= 7) {
+    return { level: "senior", progress: 100 }
+  }
+
   return { level: "senior", progress: Math.min(((years - 5) / 5) * 100, 100) }
 }
 
@@ -207,6 +323,29 @@ export default function Portfolio() {
     { name: "HTML", years: 4, icon: Globe, color: currentTheme.dark ? "bg-orange-600" : "bg-orange-700" },
   ]
 
+  const technologies = {
+    frontend: [
+      { name: "React", icon: Layers, color: "bg-blue-500" },
+      { name: "HTML5", icon: Globe, color: "bg-orange-500" },
+      { name: "CSS3", icon: Globe, color: "bg-blue-600" },
+      { name: "Tailwind CSS", icon: Layers, color: "bg-cyan-500" },
+    ],
+    backend: [
+      { name: "Node.js", icon: Settings, color: "bg-green-600" },
+      { name: "Express", icon: Settings, color: "bg-gray-600" },
+      { name: "Python", icon: Code, color: "bg-yellow-600" },
+    ],
+    tools: [
+      { name: "Git", icon: GitBranch, color: "bg-orange-600" },
+      { name: "GitHub", icon: Github, color: "bg-gray-800" },
+      { name: "VS Code", icon: Code, color: "bg-blue-700" },
+    ],
+    databases: [
+      { name: "MySQL", icon: Database, color: "bg-blue-800" },
+      { name: "MongoDB", icon: Database, color: "bg-green-700" },
+    ],
+  }
+
   const getLevelColor = (level: string, theme: string) => {
     const colors = {
       junior: theme === "dark" ? "bg-blue-500" : "bg-blue-600",
@@ -242,10 +381,22 @@ export default function Portfolio() {
                   {t.nav.about}
                 </a>
                 <a
+                  href="#education"
+                  className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
+                >
+                  {t.nav.education}
+                </a>
+                <a
                   href="#skills"
                   className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
                 >
                   {t.nav.skills}
+                </a>
+                <a
+                  href="#technologies"
+                  className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
+                >
+                  {t.nav.technologies}
                 </a>
                 <a
                   href="#projects"
@@ -295,9 +446,15 @@ export default function Portfolio() {
             <p className={`text-xl ${currentTheme.textSecondary} mb-2`}>
               {t.hero.age} | {t.hero.title}
             </p>
-            <div className="flex justify-center items-center gap-2 mb-8">
-              <MessageCircle className="w-5 h-5 text-purple-500" />
-              <span className={currentTheme.textSecondary}>{t.hero.discord}</span>
+            <div className="flex justify-center items-center gap-4 mb-8">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-purple-500" />
+                <span className={currentTheme.textSecondary}>{t.hero.location}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MessageCircle className="w-5 h-5 text-purple-500" />
+                <span className={currentTheme.textSecondary}>{t.hero.discord}</span>
+              </div>
             </div>
           </div>
 
@@ -343,6 +500,97 @@ export default function Portfolio() {
         </div>
       </section>
 
+      {/* Education Section */}
+      <section id="education" className="py-20 px-4">
+        <div className="container mx-auto">
+          <h2 className={`text-4xl font-bold ${currentTheme.text} text-center mb-12`}>{t.education.title}</h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Current Education */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <GraduationCap className="w-8 h-8 text-purple-500" />
+                  <div>
+                    <CardTitle className={`${currentTheme.text} text-xl`}>{t.education.school}</CardTitle>
+                    <CardDescription className={currentTheme.textSecondary}>
+                      <span className="inline-flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        {t.education.period}
+                      </span>
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className={`font-semibold ${currentTheme.text} mb-2`}>{t.education.course}</h4>
+                    <p className={`${currentTheme.textSecondary} mb-2`}>{t.education.year}</p>
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${theme === "dark" ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"}`}
+                    >
+                      <BookOpen className="w-4 h-4 mr-1" />
+                      {t.education.status}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Academic Achievements */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <Award className="w-8 h-8 text-yellow-500" />
+                  <CardTitle className={`${currentTheme.text} text-xl`}>{t.education.achievements}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {t.education.achievementsList.map((achievement, index) => (
+                    <li key={index} className={`flex items-start gap-2 ${currentTheme.textSecondary}`}>
+                      <div className="w-2 h-2 rounded-full bg-purple-500 mt-2 flex-shrink-0"></div>
+                      <span>{achievement}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Languages */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <Languages className="w-8 h-8 text-blue-500" />
+                  <CardTitle className={`${currentTheme.text} text-xl`}>{t.education.languages}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className={`${currentTheme.text} font-medium`}>{t.education.portuguese}</span>
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${theme === "dark" ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"}`}
+                    >
+                      {t.education.nativeLevel}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className={`${currentTheme.text} font-medium`}>{t.education.english}</span>
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${theme === "dark" ? "bg-yellow-500/20 text-yellow-300" : "bg-yellow-100 text-yellow-700"}`}
+                    >
+                      {t.education.intermediateLevel}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Skills Section */}
       <section id="skills" className="py-20 px-4">
         <div className="container mx-auto">
@@ -351,7 +599,7 @@ export default function Portfolio() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {skills.map((skill, index) => {
               const Icon = skill.icon
-              const levelData = calculateLevel(skill.years)
+              const levelData = calculateLevel(skill.years, skill.name)
               const levelColor = getLevelColor(levelData.level, theme)
               const levelTextColor = getLevelTextColor(levelData.level, theme)
 
@@ -470,6 +718,115 @@ export default function Portfolio() {
         </div>
       </section>
 
+      {/* Technologies Section */}
+      <section id="technologies" className="py-20 px-4">
+        <div className="container mx-auto">
+          <h2 className={`text-4xl font-bold ${currentTheme.text} text-center mb-12`}>{t.technologies.title}</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Frontend */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <CardTitle className={`${currentTheme.text} text-lg flex items-center gap-2`}>
+                  <Layers className="w-6 h-6 text-blue-500" />
+                  {t.technologies.frontend}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {technologies.frontend.map((tech, index) => {
+                    const Icon = tech.icon
+                    return (
+                      <div key={index} className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${tech.color}`}>
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+                        <span className={currentTheme.text}>{tech.name}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Backend */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <CardTitle className={`${currentTheme.text} text-lg flex items-center gap-2`}>
+                  <Settings className="w-6 h-6 text-green-500" />
+                  {t.technologies.backend}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {technologies.backend.map((tech, index) => {
+                    const Icon = tech.icon
+                    return (
+                      <div key={index} className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${tech.color}`}>
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+                        <span className={currentTheme.text}>{tech.name}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Tools */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <CardTitle className={`${currentTheme.text} text-lg flex items-center gap-2`}>
+                  <GitBranch className="w-6 h-6 text-orange-500" />
+                  {t.technologies.tools}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {technologies.tools.map((tech, index) => {
+                    const Icon = tech.icon
+                    return (
+                      <div key={index} className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${tech.color}`}>
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+                        <span className={currentTheme.text}>{tech.name}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Databases */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <CardTitle className={`${currentTheme.text} text-lg flex items-center gap-2`}>
+                  <Database className="w-6 h-6 text-purple-500" />
+                  {t.technologies.databases}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {technologies.databases.map((tech, index) => {
+                    const Icon = tech.icon
+                    return (
+                      <div key={index} className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${tech.color}`}>
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+                        <span className={currentTheme.text}>{tech.name}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Projects Section */}
       <section id="projects" className="py-20 px-4">
         <div className="container mx-auto">
@@ -555,6 +912,55 @@ export default function Portfolio() {
                   <Globe className="w-4 h-4 mr-2" />
                   {t.projects.viewProject}
                 </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Goals Section */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto">
+          <h2 className={`text-4xl font-bold ${currentTheme.text} text-center mb-12`}>{t.goals.title}</h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Short Term Goals */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <Target className="w-8 h-8 text-blue-500" />
+                  <CardTitle className={`${currentTheme.text} text-xl`}>{t.goals.shortTerm}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {t.goals.shortTermGoals.map((goal, index) => (
+                    <li key={index} className={`flex items-start gap-2 ${currentTheme.textSecondary}`}>
+                      <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
+                      <span>{goal}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Long Term Goals */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <Target className="w-8 h-8 text-green-500" />
+                  <CardTitle className={`${currentTheme.text} text-xl`}>{t.goals.longTerm}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {t.goals.longTermGoals.map((goal, index) => (
+                    <li key={index} className={`flex items-start gap-2 ${currentTheme.textSecondary}`}>
+                      <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0"></div>
+                      <span>{goal}</span>
+                    </li>
+                  ))}
+                </ul>
               </CardContent>
             </Card>
           </div>
