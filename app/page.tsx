@@ -14,6 +14,7 @@ const translations = {
     nav: {
       about: "Sobre",
       skills: "Habilidades",
+      projects: "Projetos",
       contact: "Contato",
     },
     hero: {
@@ -28,10 +29,17 @@ const translations = {
     },
     about: {
       title: "Sobre Mim",
-      description1:
-        "Sou um desenvolvedor Full Stack com foco em entregar soluções completas, desde o backend até o frontend. Tenho experiência sólida em várias linguagens de programação e tecnologias, acumulando mais de 3 anos em Java, Python, JavaScript e C, além de 7 anos de Luau (linguagem do Roblox) e 4 anos de HTML.",
-      description2:
-        "Busco constantemente aprimorar minhas habilidades e aprender novas tecnologias para me destacar no mercado e entregar projetos de alta qualidade.",
+      description:
+        "Desenvolvedor Full Stack apaixonado por criar soluções inovadoras e eficientes. Sempre em busca de novos desafios e oportunidades para crescer profissionalmente.",
+    },
+    projects: {
+      title: "Meus Projetos",
+      github: "Projetos GitHub",
+      roblox: "Portfolio Roblox",
+      viewProject: "Ver Projeto",
+      viewGithub: "Ver no GitHub",
+      robloxDescription: "Portfolio completo dos meus trabalhos e experiências no desenvolvimento Roblox/Luau",
+      githubDescription: "Confira meus repositórios e contribuições no GitHub",
     },
     skills: {
       title: "Experiência Técnica",
@@ -53,6 +61,7 @@ const translations = {
     nav: {
       about: "About",
       skills: "Skills",
+      projects: "Projects",
       contact: "Contact",
     },
     hero: {
@@ -67,10 +76,17 @@ const translations = {
     },
     about: {
       title: "About Me",
-      description1:
-        "I am a Full Stack developer focused on delivering complete solutions, from backend to frontend. I have solid experience in various programming languages and technologies, accumulating over 3 years in Java, Python, JavaScript and C, plus 7 years of Luau (Roblox language) and 4 years of HTML.",
-      description2:
-        "I constantly seek to improve my skills and learn new technologies to stand out in the market and deliver high-quality projects.",
+      description:
+        "Full Stack developer passionate about creating innovative and efficient solutions. Always seeking new challenges and opportunities for professional growth.",
+    },
+    projects: {
+      title: "My Projects",
+      github: "GitHub Projects",
+      roblox: "Roblox Portfolio",
+      viewProject: "View Project",
+      viewGithub: "View on GitHub",
+      robloxDescription: "Complete portfolio of my work and experience in Roblox/Luau development",
+      githubDescription: "Check out my repositories and contributions on GitHub",
     },
     skills: {
       title: "Technical Experience",
@@ -137,6 +153,33 @@ export default function Portfolio() {
 
   const currentTheme = themeClasses[theme]
 
+  const githubProjects = [
+    {
+      name: "qualquerum",
+      description: language === "pt" ? "Projeto em desenvolvimento" : "Project in development",
+      language: "JavaScript",
+      color: "bg-yellow-500",
+    },
+    {
+      name: "vota-o-sistema",
+      description: language === "pt" ? "Sistema de votação" : "Voting system",
+      language: "HTML",
+      color: "bg-orange-500",
+    },
+    {
+      name: "snakegame",
+      description: language === "pt" ? "Jogo da cobrinha clássico" : "Classic snake game",
+      language: "JavaScript",
+      color: "bg-yellow-500",
+    },
+    {
+      name: "BusWay",
+      description: language === "pt" ? "Sistema de transporte" : "Transportation system",
+      language: "HTML",
+      color: "bg-orange-500",
+    },
+  ]
+
   return (
     <div className={`min-h-screen ${currentTheme.bg}`}>
       {/* Header */}
@@ -158,6 +201,12 @@ export default function Portfolio() {
                   className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
                 >
                   {t.nav.skills}
+                </a>
+                <a
+                  href="#projects"
+                  className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
+                >
+                  {t.nav.projects}
                 </a>
                 <a
                   href="#contact"
@@ -242,9 +291,8 @@ export default function Portfolio() {
             <CardHeader>
               <CardTitle className="text-3xl text-center mb-4">{t.about.title}</CardTitle>
             </CardHeader>
-            <CardContent className="text-lg leading-relaxed">
-              <p className="mb-6">{t.about.description1}</p>
-              <p>{t.about.description2}</p>
+            <CardContent className="text-lg leading-relaxed text-center">
+              <p>{t.about.description}</p>
             </CardContent>
           </Card>
         </div>
@@ -287,6 +335,97 @@ export default function Portfolio() {
                 </Card>
               )
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section */}
+      <section id="projects" className="py-20 px-4">
+        <div className="container mx-auto">
+          <h2 className={`text-4xl font-bold ${currentTheme.text} text-center mb-12`}>{t.projects.title}</h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            {/* GitHub Projects */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <Github className="w-8 h-8 text-purple-500" />
+                  <CardTitle className={`${currentTheme.text} text-2xl`}>{t.projects.github}</CardTitle>
+                </div>
+                <CardDescription className={currentTheme.textSecondary}>{t.projects.githubDescription}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                  {githubProjects.map((project, index) => (
+                    <div
+                      key={index}
+                      className={`p-4 rounded-lg ${theme === "dark" ? "bg-white/5" : "bg-gray-100"} border ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className={`w-3 h-3 rounded-full ${project.color}`}></div>
+                        <h4 className={`font-semibold ${currentTheme.text}`}>{project.name}</h4>
+                      </div>
+                      <p className={`text-sm ${currentTheme.textSecondary} mb-2`}>{project.description}</p>
+                      <span
+                        className={`text-xs px-2 py-1 rounded ${theme === "dark" ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}
+                      >
+                        {project.language}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  className={currentTheme.button}
+                  onClick={() => window.open("https://github.com/AdryanMichel", "_blank")}
+                >
+                  <Github className="w-4 h-4 mr-2" />
+                  {t.projects.viewGithub}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Roblox Portfolio */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <Gamepad2 className="w-8 h-8 text-red-500" />
+                  <CardTitle className={`${currentTheme.text} text-2xl`}>{t.projects.roblox}</CardTitle>
+                </div>
+                <CardDescription className={currentTheme.textSecondary}>{t.projects.robloxDescription}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div
+                  className={`p-6 rounded-lg ${theme === "dark" ? "bg-gradient-to-br from-red-500/10 to-orange-500/10" : "bg-gradient-to-br from-red-50 to-orange-50"} border ${theme === "dark" ? "border-red-500/20" : "border-red-200"} mb-6`}
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
+                      <Gamepad2 className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h4 className={`font-bold ${currentTheme.text}`}>Portfolio Roblox</h4>
+                      <p className={`text-sm ${currentTheme.textSecondary}`}>7 anos de experiência em Luau</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className={`text-center p-3 rounded ${theme === "dark" ? "bg-white/5" : "bg-white/50"}`}>
+                      <div className={`text-xl font-bold ${currentTheme.text}`}>7+</div>
+                      <div className={`text-xs ${currentTheme.textSecondary}`}>Anos</div>
+                    </div>
+                    <div className={`text-center p-3 rounded ${theme === "dark" ? "bg-white/5" : "bg-white/50"}`}>
+                      <div className={`text-xl font-bold ${currentTheme.text}`}>Luau</div>
+                      <div className={`text-xs ${currentTheme.textSecondary}`}>Especialidade</div>
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  onClick={() => window.open("https://michelportfolio.carrd.co/", "_blank")}
+                >
+                  <Globe className="w-4 h-4 mr-2" />
+                  {t.projects.viewProject}
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
