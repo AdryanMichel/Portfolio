@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import type React from "react"
+
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
@@ -26,6 +28,7 @@ import {
   GitBranch,
   Menu,
   X,
+  ExternalLink,
 } from "lucide-react"
 
 type Language = "pt" | "en"
@@ -35,27 +38,29 @@ const translations = {
   pt: {
     nav: {
       about: "Sobre",
-      education: "Educação",
       skills: "Habilidades",
       technologies: "Tecnologias",
       projects: "Projetos",
+      education: "Formação",
       contact: "Contato",
     },
     hero: {
-      title: "Desenvolvedor Full Stack",
+      title: "Desenvolvedor Full Stack Multilanguage",
+      subtitle: "Construção de APIs escaláveis, sistemas completos e experiências interativas para web e games.",
       age: "18 anos",
       location: "Rio Claro, SP",
       discord: "Discord: gm_whitinho",
       contact: "Entre em Contato",
       github: "GitHub",
-      experience: "Anos de Experiência",
+      experience: "Anos em Dev Hobby",
+      experienceNote: "(Roblox/Luau)",
       languages: "Linguagens",
       developer: "Desenvolvedor",
     },
     about: {
       title: "Sobre Mim",
       description:
-        "Desenvolvedor Full Stack apaixonado por criar soluções inovadoras e eficientes. Atualmente cursando Desenvolvimento de Sistemas, sempre em busca de novos desafios e oportunidades para crescer profissionalmente.",
+        "Desenvolvedor Full Stack apaixonado por tecnologia, performance e boas práticas. Trabalho com programação há anos e já construí desde aplicações web completas até sistemas de anti-cheat e mecânicas avançadas em jogos. Finalizei meus estudos e minha formação técnica em Desenvolvimento de Sistemas, e hoje foco em criar projetos cada vez mais maduros, eficientes e bem estruturados.",
     },
     education: {
       title: "Formação Acadêmica",
@@ -85,9 +90,13 @@ const translations = {
       github: "Projetos GitHub",
       roblox: "Portfolio Roblox",
       viewProject: "Ver Projeto",
-      viewGithub: "Ver no GitHub",
+      viewGithub: "Ver Perfil no GitHub",
+      viewDemo: "Ver Demo",
       robloxDescription: "Portfolio completo dos meus trabalhos e experiências no desenvolvimento Roblox/Luau",
       githubDescription: "Confira meus repositórios e contribuições no GitHub",
+      problem: "Objetivo",
+      technologies: "Tecnologias",
+      result: "Resultado",
     },
     skills: {
       title: "Linguagens de Programação",
@@ -140,34 +149,36 @@ const translations = {
   en: {
     nav: {
       about: "About",
-      education: "Education",
       skills: "Skills",
       technologies: "Technologies",
       projects: "Projects",
+      education: "Education",
       contact: "Contact",
     },
     hero: {
-      title: "Full Stack Developer",
+      title: "Multilanguage Full Stack Developer",
+      subtitle: "Building scalable APIs, complete systems and interactive experiences for web and games.",
       age: "18 years old",
-      location: "Rio Claro, SP",
+      location: "Rio Claro, SP - Brazil",
       discord: "Discord: gm_whitinho",
       contact: "Get In Touch",
       github: "GitHub",
-      experience: "Years of Experience",
+      experience: "Years in Hobby Dev",
+      experienceNote: "(Roblox/Luau)",
       languages: "Languages",
       developer: "Developer",
     },
     about: {
       title: "About Me",
       description:
-        "Full Stack developer passionate about creating innovative and efficient solutions. Currently studying Systems Development, always seeking new challenges and opportunities for professional growth.",
+        "Full Stack Developer passionate about technology, performance, and best practices. I've been programming for years and have built everything from complete web applications to anti-cheat systems and advanced game mechanics. I completed my studies and technical training in Systems Development, and today I focus on creating increasingly mature, efficient, and well-structured projects.",
     },
     education: {
-      title: "Academic Background",
+      title: "Education",
       completed: "Completed",
       school: "João Professor Batista Leme",
       schoolPeriod: "2019 - 2025",
-      schoolDescription: "Middle School and High School",
+      schoolDescription: "Middle and High School",
       course: "Systems Development",
       courseSchool: "FIEC",
       coursePeriod: "2024 - 2025",
@@ -176,7 +187,7 @@ const translations = {
       achievements: "Academic Achievements",
       achievementsList: [
         "Focus on programming and web development",
-        "Practical projects in multiple languages",
+        "Practical projects in various languages",
         "Active participation in technical activities",
       ],
       languages: "Languages",
@@ -190,9 +201,13 @@ const translations = {
       github: "GitHub Projects",
       roblox: "Roblox Portfolio",
       viewProject: "View Project",
-      viewGithub: "View on GitHub",
-      robloxDescription: "Complete portfolio of my work and experience in Roblox/Luau development",
+      viewGithub: "View GitHub Profile",
+      viewDemo: "View Demo",
+      robloxDescription: "Complete portfolio of my work and experiences in Roblox/Luau development",
       githubDescription: "Check out my repositories and contributions on GitHub",
+      problem: "Objective",
+      technologies: "Technologies",
+      result: "Result",
     },
     skills: {
       title: "Programming Languages",
@@ -256,6 +271,7 @@ export default function Portfolio() {
   const [language, setLanguage] = useState<Language>("pt")
   const [theme, setTheme] = useState<Theme>("dark")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState("")
 
   const t = translations[language]
 
@@ -266,6 +282,45 @@ export default function Portfolio() {
   const handleNavClick = () => {
     setMobileMenuOpen(false)
   }
+
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault()
+    const targetId = href.replace("#", "")
+    const element = document.getElementById(targetId)
+    if (element) {
+      const headerOffset = 80
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      })
+    }
+    setMobileMenuOpen(false)
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ["about", "education", "skills", "technologies", "projects", "contact"]
+      const scrollPosition = window.scrollY + 100
+
+      for (const section of sections) {
+        const element = document.getElementById(section)
+        if (element) {
+          const offsetTop = element.offsetTop
+          const offsetHeight = element.offsetHeight
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   const themeClasses = {
     dark: {
@@ -300,28 +355,80 @@ export default function Portfolio() {
 
   const githubProjects = [
     {
-      name: "qualquerum",
-      description: language === "pt" ? "Projeto em desenvolvimento" : "Project in development",
+      name: "Snake Game",
+      description:
+        language === "pt"
+          ? "Recriação do clássico jogo da cobrinha para praticar manipulação de DOM e lógica de jogo."
+          : "Classic snake game recreation to practice DOM manipulation and game logic.",
+      objective:
+        language === "pt"
+          ? "Consolidar conhecimento em lógica de programação e gerenciar estado do jogo em tempo real."
+          : "Consolidate programming logic knowledge and manage real-time game state.",
+      result:
+        language === "pt"
+          ? "Jogo funcional com pontuação e dificuldade progressiva."
+          : "Functional game with scoring and progressive difficulty.",
       language: "JavaScript",
+      technologies: ["JavaScript", "HTML5", "CSS3"],
       color: "bg-yellow-500",
-    },
-    {
-      name: "vota-o-sistema",
-      description: language === "pt" ? "Sistema de votação" : "Voting system",
-      language: "HTML",
-      color: "bg-orange-500",
-    },
-    {
-      name: "snakegame",
-      description: language === "pt" ? "Jogo da cobrinha clássico" : "Classic snake game",
-      language: "JavaScript",
-      color: "bg-yellow-500",
+      repo: "https://github.com/AdryanMichel/snakegame",
     },
     {
       name: "BusWay",
-      description: language === "pt" ? "Sistema de transporte" : "Transportation system",
-      language: "HTML",
+      description:
+        language === "pt"
+          ? "Sistema de gerenciamento de rotas e horários de ônibus para facilitar o transporte público."
+          : "Bus route and schedule management system to facilitate public transportation.",
+      objective:
+        language === "pt"
+          ? "Criar uma solução prática para usuários de transporte público encontrarem rotas."
+          : "Create a practical solution for public transport users to find routes.",
+      result:
+        language === "pt"
+          ? "Aplicação funcional com busca de rotas e horários em tempo real."
+          : "Functional application with real-time route and schedule search.",
+      language: "Java",
+      technologies: ["Java", "MySQL"],
       color: "bg-orange-500",
+      repo: "https://github.com/AdryanMichel/BusWay",
+    },
+    {
+      name: "Vota-O-Sistema",
+      description:
+        language === "pt"
+          ? "Sistema de votação eletrônica seguro e eficiente para eleições e enquetes."
+          : "Secure and efficient electronic voting system for elections and polls.",
+      objective:
+        language === "pt"
+          ? "Desenvolver um sistema de votação com autenticação e contagem automática."
+          : "Develop a voting system with authentication and automatic counting.",
+      result:
+        language === "pt"
+          ? "Sistema completo com interface intuitiva e resultados em tempo real."
+          : "Complete system with intuitive interface and real-time results.",
+      language: "Python",
+      technologies: ["Python"],
+      color: "bg-blue-500",
+      repo: "https://github.com/AdryanMichel/Vota-O-Sistema",
+    },
+    {
+      name: "QualquerUm",
+      description:
+        language === "pt"
+          ? "Aplicação web para sorteios e seleções aleatorias de forma justa e transparente."
+          : "Web application for fair and transparent random draws and selections.",
+      objective:
+        language === "pt"
+          ? "Criar uma ferramenta simples e confiável para sorteios diversos."
+          : "Create a simple and reliable tool for various draws.",
+      result:
+        language === "pt"
+          ? "Ferramenta leve e responsiva com múltiplos modos de sorteio."
+          : "Lightweight and responsive tool with multiple draw modes.",
+      language: "JavaScript",
+      technologies: ["JavaScript", "HTML", "CSS"],
+      color: "bg-yellow-500",
+      repo: "https://github.com/AdryanMichel/qualquerum",
     },
   ]
 
@@ -398,9 +505,17 @@ export default function Portfolio() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className={`${currentTheme.textSecondary} hover:text-purple-400 transition-colors text-sm xl:text-base`}
+                    onClick={(e) => scrollToSection(e, link.href)}
+                    className={`transition-all duration-300 text-sm xl:text-base relative ${
+                      activeSection === link.href.replace("#", "")
+                        ? "text-purple-400 font-medium"
+                        : `${currentTheme.textSecondary} hover:text-purple-400`
+                    }`}
                   >
                     {link.label}
+                    {activeSection === link.href.replace("#", "") && (
+                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-purple-400 rounded-full" />
+                    )}
                   </a>
                 ))}
               </div>
@@ -465,8 +580,12 @@ export default function Portfolio() {
                   <a
                     key={link.href}
                     href={link.href}
-                    onClick={handleNavClick}
-                    className={`${currentTheme.text} hover:text-purple-400 transition-colors text-lg py-2 border-b ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
+                    onClick={(e) => scrollToSection(e, link.href)}
+                    className={`transition-all duration-300 text-lg py-2 border-b ${theme === "dark" ? "border-white/10" : "border-gray-200"} ${
+                      activeSection === link.href.replace("#", "")
+                        ? "text-purple-400 font-medium"
+                        : `${currentTheme.text} hover:text-purple-400`
+                    }`}
                   >
                     {link.label}
                   </a>
@@ -477,6 +596,7 @@ export default function Portfolio() {
         )}
       </header>
 
+      {/* Hero Section */}
       <section className="pt-24 md:pt-32 pb-12 md:pb-20 px-4">
         <div className="container mx-auto text-center">
           <div className="mb-6 md:mb-8">
@@ -486,9 +606,9 @@ export default function Portfolio() {
                 Silveira Evangelista
               </span>
             </h1>
-            <p className={`text-base md:text-xl ${currentTheme.textSecondary} mb-2`}>
-              {t.hero.age} | {t.hero.title}
-            </p>
+            <p className={`text-lg md:text-2xl font-semibold ${currentTheme.text} mb-2`}>{t.hero.title}</p>
+            <p className={`text-sm md:text-base ${currentTheme.textSecondary} mb-2`}>{t.hero.subtitle}</p>
+            <p className={`text-xs md:text-sm ${currentTheme.textSecondary} mb-4`}>{t.hero.age}</p>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 mb-6 md:mb-8">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
@@ -521,6 +641,7 @@ export default function Portfolio() {
             <div className={`${currentTheme.statCard} rounded-lg p-3 md:p-4 border`}>
               <div className={`text-xl md:text-2xl font-bold ${currentTheme.text}`}>7+</div>
               <div className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>{t.hero.experience}</div>
+              <div className={`text-xs ${currentTheme.textSecondary} opacity-70`}>{t.hero.experienceNote}</div>
             </div>
             <div className={`${currentTheme.statCard} rounded-lg p-3 md:p-4 border`}>
               <div className={`text-xl md:text-2xl font-bold ${currentTheme.text}`}>6</div>
@@ -930,51 +1051,88 @@ export default function Portfolio() {
             {t.projects.title}
           </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 mb-8 md:mb-12">
-            {/* GitHub Projects */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
-              <CardHeader className="p-4 md:p-6">
-                <div className="flex items-center gap-3 mb-2 md:mb-4">
-                  <Github className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
-                  <CardTitle className={`${currentTheme.text} text-xl md:text-2xl`}>{t.projects.github}</CardTitle>
-                </div>
-                <CardDescription className={`${currentTheme.textSecondary} text-sm md:text-base`}>
-                  {t.projects.githubDescription}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-4 md:p-6 pt-0">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
-                  {githubProjects.map((project, index) => (
-                    <div
-                      key={index}
-                      className={`p-3 md:p-4 rounded-lg ${theme === "dark" ? "bg-white/5" : "bg-gray-100"} border ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
-                    >
-                      <div className="flex items-center gap-2 mb-1 md:mb-2">
-                        <div className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full ${project.color}`}></div>
-                        <h4 className={`font-semibold ${currentTheme.text} text-sm md:text-base truncate`}>
-                          {project.name}
-                        </h4>
+          <div className="space-y-6 md:space-y-8 mb-8 md:mb-12">
+            {/* GitHub Projects Grid */}
+            <div>
+              <div className="flex items-center gap-3 mb-4 md:mb-6">
+                <Github className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
+                <h3 className={`${currentTheme.text} text-xl md:text-2xl font-bold`}>{t.projects.github}</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                {githubProjects.map((project, index) => (
+                  <Card
+                    key={index}
+                    className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border overflow-hidden`}
+                  >
+                    <CardHeader className="p-4 md:p-5 pb-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded-full ${project.color}`}></div>
+                          <CardTitle className={`${currentTheme.text} text-lg md:text-xl`}>{project.name}</CardTitle>
+                        </div>
+                        <span
+                          className={`text-xs px-2 py-1 rounded ${theme === "dark" ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}
+                        >
+                          {project.language}
+                        </span>
                       </div>
-                      <p className={`text-xs md:text-sm ${currentTheme.textSecondary} mb-1 md:mb-2`}>
+                      <CardDescription className={`${currentTheme.textSecondary} text-sm`}>
                         {project.description}
-                      </p>
-                      <span
-                        className={`text-xs px-2 py-0.5 rounded ${theme === "dark" ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-4 md:p-5 pt-2 space-y-3">
+                      <div>
+                        <h4 className={`text-xs font-semibold ${currentTheme.textSecondary} uppercase mb-1`}>
+                          {t.projects.problem}
+                        </h4>
+                        <p className={`text-sm ${currentTheme.text}`}>{project.objective}</p>
+                      </div>
+                      <div>
+                        <h4 className={`text-xs font-semibold ${currentTheme.textSecondary} uppercase mb-1`}>
+                          {t.projects.technologies}
+                        </h4>
+                        <div className="flex flex-wrap gap-1">
+                          {project.technologies.map((tech, i) => (
+                            <span
+                              key={i}
+                              className={`text-xs px-2 py-0.5 rounded ${theme === "dark" ? "bg-white/10 text-white/80" : "bg-gray-200 text-gray-700"}`}
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className={`text-xs font-semibold ${currentTheme.textSecondary} uppercase mb-1`}>
+                          {t.projects.result}
+                        </h4>
+                        <p className={`text-sm ${currentTheme.text}`}>{project.result}</p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={`w-full mt-2 ${currentTheme.buttonOutline}`}
+                        onClick={() => window.open(project.repo, "_blank")}
                       >
-                        {project.language}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                        <Github className="w-4 h-4 mr-2" />
+                        {t.projects.viewGithub}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="mt-4 md:mt-6 text-center">
                 <Button
-                  className={`w-full ${currentTheme.button}`}
+                  className={`${currentTheme.button}`}
                   onClick={() => window.open("https://github.com/AdryanMichel", "_blank")}
                 >
                   <Github className="w-4 h-4 mr-2" />
                   {t.projects.viewGithub}
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Roblox Portfolio */}
             <Card
@@ -1000,81 +1158,68 @@ export default function Portfolio() {
                     </div>
                     <p className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>
                       {language === "pt"
-                        ? "7 anos de experiência em desenvolvimento Roblox"
-                        : "7 years of experience in Roblox development"}
-                    </p>
-                  </div>
-                  <div
-                    className={`p-3 md:p-4 rounded-lg ${theme === "dark" ? "bg-red-500/10" : "bg-red-50"} border ${theme === "dark" ? "border-red-500/20" : "border-red-200"}`}
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <Target className="w-4 h-4 md:w-5 md:h-5 text-red-500" />
-                      <span className={`font-semibold ${currentTheme.text} text-sm md:text-base`}>
-                        {language === "pt" ? "Especialista" : "Specialist"}
-                      </span>
-                    </div>
-                    <p className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>
-                      {language === "pt"
-                        ? "Scripting avançado e desenvolvimento de jogos"
-                        : "Advanced scripting and game development"}
+                        ? "7+ anos de experiência desenvolvendo sistemas complexos, anti-cheats, mecânicas avançadas de jogos e interfaces de usuário no ecossistema Roblox."
+                        : "7+ years of experience developing complex systems, anti-cheat, advanced game mechanics, and user interfaces in the Roblox ecosystem."}
                     </p>
                   </div>
                 </div>
                 <Button
-                  className="w-full bg-red-600 hover:bg-red-700"
+                  className="w-full bg-red-600 hover:bg-red-700 text-white"
                   onClick={() => window.open("https://michelportfolio.carrd.co/", "_blank")}
                 >
-                  <Gamepad2 className="w-4 h-4 mr-2" />
+                  <ExternalLink className="w-4 h-4 mr-2" />
                   {t.projects.viewProject}
                 </Button>
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
 
-          {/* Professional Goals */}
-          <div className={`${currentTheme.card} rounded-lg p-4 md:p-8 border`}>
-            <h3 className={`text-xl md:text-2xl font-bold ${currentTheme.text} text-center mb-6 md:mb-8`}>
-              {t.goals.title}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              <div>
-                <h4
-                  className={`text-lg md:text-xl font-semibold ${currentTheme.text} mb-3 md:mb-4 flex items-center gap-2`}
-                >
-                  <Target className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
-                  {t.goals.shortTerm}
-                </h4>
-                <ul className="space-y-2 md:space-y-3">
-                  {t.goals.shortTermGoals.map((goal, index) => (
-                    <li
-                      key={index}
-                      className={`flex items-start gap-2 ${currentTheme.textSecondary} text-sm md:text-base`}
-                    >
-                      <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
-                      <span>{goal}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h4
-                  className={`text-lg md:text-xl font-semibold ${currentTheme.text} mb-3 md:mb-4 flex items-center gap-2`}
-                >
-                  <Target className="w-4 h-4 md:w-5 md:h-5 text-green-500" />
-                  {t.goals.longTerm}
-                </h4>
-                <ul className="space-y-2 md:space-y-3">
-                  {t.goals.longTermGoals.map((goal, index) => (
-                    <li
-                      key={index}
-                      className={`flex items-start gap-2 ${currentTheme.textSecondary} text-sm md:text-base`}
-                    >
-                      <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0"></div>
-                      <span>{goal}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      {/* Professional Goals */}
+      <section className="py-12 md:py-20 px-4">
+        <div className={`${currentTheme.card} rounded-lg p-4 md:p-8 border`}>
+          <h3 className={`text-xl md:text-2xl font-bold ${currentTheme.text} text-center mb-6 md:mb-8`}>
+            {t.goals.title}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            <div>
+              <h4
+                className={`text-lg md:text-xl font-semibold ${currentTheme.text} mb-3 md:mb-4 flex items-center gap-2`}
+              >
+                <Target className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
+                {t.goals.shortTerm}
+              </h4>
+              <ul className="space-y-2 md:space-y-3">
+                {t.goals.shortTermGoals.map((goal, index) => (
+                  <li
+                    key={index}
+                    className={`flex items-start gap-2 ${currentTheme.textSecondary} text-sm md:text-base`}
+                  >
+                    <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
+                    <span>{goal}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4
+                className={`text-lg md:text-xl font-semibold ${currentTheme.text} mb-3 md:mb-4 flex items-center gap-2`}
+              >
+                <Target className="w-4 h-4 md:w-5 md:h-5 text-green-500" />
+                {t.goals.longTerm}
+              </h4>
+              <ul className="space-y-2 md:space-y-3">
+                {t.goals.longTermGoals.map((goal, index) => (
+                  <li
+                    key={index}
+                    className={`flex items-start gap-2 ${currentTheme.textSecondary} text-sm md:text-base`}
+                  >
+                    <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0"></div>
+                    <span>{goal}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
