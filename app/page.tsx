@@ -24,6 +24,8 @@ import {
   Database,
   Layers,
   GitBranch,
+  Menu,
+  X,
 } from "lucide-react"
 
 type Language = "pt" | "en"
@@ -57,12 +59,15 @@ const translations = {
     },
     education: {
       title: "Formação Acadêmica",
-      current: "Cursando",
+      completed: "Concluído",
       school: "João Professor Batista Leme",
+      schoolPeriod: "2019 - 2025",
+      schoolDescription: "Ensino Fundamental II e Ensino Médio",
       course: "Desenvolvimento de Sistemas",
-      year: "3º Ano do Ensino Médio",
-      period: "2022 - 2025",
-      status: "Em andamento",
+      courseSchool: "FIEC",
+      coursePeriod: "2024 - 2025",
+      courseDescription: "Curso Técnico em Desenvolvimento de Sistemas",
+      completedDate: "Concluído em 12 de Dezembro de 2025",
       achievements: "Conquistas Acadêmicas",
       achievementsList: [
         "Foco em programação e desenvolvimento web",
@@ -159,16 +164,19 @@ const translations = {
     },
     education: {
       title: "Academic Background",
-      current: "Currently studying",
+      completed: "Completed",
       school: "João Professor Batista Leme",
+      schoolPeriod: "2019 - 2025",
+      schoolDescription: "Middle School and High School",
       course: "Systems Development",
-      year: "3rd Year of High School",
-      period: "2022 - 2025",
-      status: "In progress",
+      courseSchool: "FIEC",
+      coursePeriod: "2024 - 2025",
+      courseDescription: "Technical Course in Systems Development",
+      completedDate: "Completed on December 12, 2025",
       achievements: "Academic Achievements",
       achievementsList: [
         "Focus on programming and web development",
-        "Practical projects in various languages",
+        "Practical projects in multiple languages",
         "Active participation in technical activities",
       ],
       languages: "Languages",
@@ -235,27 +243,28 @@ const translations = {
   },
 }
 
-// Função para calcular nível baseado nos anos de experiência
 const calculateLevel = (years: number, skillName?: string) => {
   if (years <= 2) return { level: "junior", progress: (years / 2) * 100 }
   if (years <= 5) return { level: "pleno", progress: ((years - 2) / 3) * 100 }
-
-  // Para Luau com 7 anos, mostrar 100% no nível Senior
   if (skillName === "Luau" && years >= 7) {
     return { level: "senior", progress: 100 }
   }
-
   return { level: "senior", progress: Math.min(((years - 5) / 5) * 100, 100) }
 }
 
 export default function Portfolio() {
   const [language, setLanguage] = useState<Language>("pt")
   const [theme, setTheme] = useState<Theme>("dark")
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const t = translations[language]
 
   const handleEmailContact = () => {
     window.location.href = "mailto:adryanmichel.profissional@gmail.com"
+  }
+
+  const handleNavClick = () => {
+    setMobileMenuOpen(false)
   }
 
   const themeClasses = {
@@ -270,6 +279,7 @@ export default function Portfolio() {
       button: "bg-purple-600 hover:bg-purple-700",
       buttonOutline: "border-white/20 text-white hover:bg-white/10",
       statCard: "bg-white/10 backdrop-blur-sm border-white/20",
+      mobileMenu: "bg-slate-900/95 backdrop-blur-lg",
     },
     light: {
       bg: "bg-gradient-to-br from-gray-50 via-purple-50 to-gray-100",
@@ -282,6 +292,7 @@ export default function Portfolio() {
       button: "bg-purple-600 hover:bg-purple-700",
       buttonOutline: "border-gray-300 text-gray-700 hover:bg-gray-100",
       statCard: "bg-white/80 backdrop-blur-sm border-gray-200",
+      mobileMenu: "bg-white/95 backdrop-blur-lg",
     },
   }
 
@@ -315,12 +326,12 @@ export default function Portfolio() {
   ]
 
   const skills = [
-    { name: "Java", years: 3, icon: Code, color: currentTheme.dark ? "bg-orange-500" : "bg-orange-600" },
-    { name: "Python", years: 3, icon: Code, color: currentTheme.dark ? "bg-green-500" : "bg-green-600" },
-    { name: "JavaScript", years: 3, icon: Globe, color: currentTheme.dark ? "bg-yellow-500" : "bg-yellow-600" },
-    { name: "C", years: 3, icon: Code, color: currentTheme.dark ? "bg-purple-500" : "bg-purple-600" },
-    { name: "Luau", years: 7, icon: Gamepad2, color: currentTheme.dark ? "bg-red-500" : "bg-red-600" },
-    { name: "HTML", years: 4, icon: Globe, color: currentTheme.dark ? "bg-orange-600" : "bg-orange-700" },
+    { name: "Java", years: 3, icon: Code, color: "bg-orange-500" },
+    { name: "Python", years: 3, icon: Code, color: "bg-green-500" },
+    { name: "JavaScript", years: 3, icon: Globe, color: "bg-yellow-500" },
+    { name: "C", years: 3, icon: Code, color: "bg-purple-500" },
+    { name: "Luau", years: 7, icon: Gamepad2, color: "bg-red-500" },
+    { name: "HTML", years: 4, icon: Globe, color: "bg-orange-600" },
   ]
 
   const technologies = {
@@ -346,11 +357,11 @@ export default function Portfolio() {
     ],
   }
 
-  const getLevelColor = (level: string, theme: string) => {
+  const getLevelColor = (level: string) => {
     const colors = {
-      junior: theme === "dark" ? "bg-blue-500" : "bg-blue-600",
-      pleno: theme === "dark" ? "bg-yellow-500" : "bg-yellow-600",
-      senior: theme === "dark" ? "bg-green-500" : "bg-green-600",
+      junior: "bg-blue-500",
+      pleno: "bg-yellow-500",
+      senior: "bg-green-500",
     }
     return colors[level as keyof typeof colors]
   }
@@ -364,52 +375,34 @@ export default function Portfolio() {
     return colors[level as keyof typeof colors]
   }
 
+  const navLinks = [
+    { href: "#about", label: t.nav.about },
+    { href: "#education", label: t.nav.education },
+    { href: "#skills", label: t.nav.skills },
+    { href: "#technologies", label: t.nav.technologies },
+    { href: "#projects", label: t.nav.projects },
+    { href: "#contact", label: t.nav.contact },
+  ]
+
   return (
     <div className={`min-h-screen ${currentTheme.bg}`}>
-      {/* Header */}
       <header className={`fixed top-0 w-full ${currentTheme.header} z-50`}>
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-3 md:py-4">
           <nav className="flex justify-between items-center">
-            <h1 className={`text-2xl font-bold ${currentTheme.text}`}>Portfolio</h1>
+            <h1 className={`text-xl md:text-2xl font-bold ${currentTheme.text}`}>Portfolio</h1>
 
-            <div className="flex items-center gap-6">
-              <div className="hidden md:flex space-x-6">
-                <a
-                  href="#about"
-                  className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
-                >
-                  {t.nav.about}
-                </a>
-                <a
-                  href="#education"
-                  className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
-                >
-                  {t.nav.education}
-                </a>
-                <a
-                  href="#skills"
-                  className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
-                >
-                  {t.nav.skills}
-                </a>
-                <a
-                  href="#technologies"
-                  className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
-                >
-                  {t.nav.technologies}
-                </a>
-                <a
-                  href="#projects"
-                  className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
-                >
-                  {t.nav.projects}
-                </a>
-                <a
-                  href="#contact"
-                  className={`${currentTheme.textSecondary} hover:${currentTheme.text} transition-colors`}
-                >
-                  {t.nav.contact}
-                </a>
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-6">
+              <div className="flex space-x-4 xl:space-x-6">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className={`${currentTheme.textSecondary} hover:text-purple-400 transition-colors text-sm xl:text-base`}
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </div>
 
               {/* Theme Toggle */}
@@ -429,71 +422,126 @@ export default function Portfolio() {
                 <span className={`text-sm ${currentTheme.textSecondary}`}>{language === "pt" ? "EN" : "PT"}</span>
               </div>
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="flex lg:hidden items-center gap-3">
+              {/* Theme Toggle Mobile */}
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className={`p-2 rounded-lg ${currentTheme.textSecondary}`}
+                aria-label="Toggle theme"
+              >
+                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+
+              {/* Language Toggle Mobile */}
+              <button
+                onClick={() => setLanguage(language === "pt" ? "en" : "pt")}
+                className={`p-2 rounded-lg ${currentTheme.textSecondary} text-sm font-medium`}
+                aria-label="Toggle language"
+              >
+                {language === "pt" ? "EN" : "PT"}
+              </button>
+
+              {/* Hamburger Button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className={`p-2 rounded-lg ${currentTheme.textSecondary}`}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </nav>
         </div>
+
+        {mobileMenuOpen && (
+          <div
+            className={`lg:hidden ${currentTheme.mobileMenu} border-t ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
+          >
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex flex-col space-y-4">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={handleNavClick}
+                    className={`${currentTheme.text} hover:text-purple-400 transition-colors text-lg py-2 border-b ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-20 px-4">
         <div className="container mx-auto text-center">
-          <div className="mb-8">
-            <h1 className={`text-5xl md:text-7xl font-bold ${currentTheme.text} mb-4 animate-fade-in`}>
+          <div className="mb-6 md:mb-8">
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold ${currentTheme.text} mb-3 md:mb-4`}>
               Adryan Michel
-              <span className={`block text-3xl md:text-4xl text-purple-500 font-normal mt-2`}>
+              <span className={`block text-xl sm:text-2xl md:text-3xl lg:text-4xl text-purple-500 font-normal mt-2`}>
                 Silveira Evangelista
               </span>
             </h1>
-            <p className={`text-xl ${currentTheme.textSecondary} mb-2`}>
+            <p className={`text-base md:text-xl ${currentTheme.textSecondary} mb-2`}>
               {t.hero.age} | {t.hero.title}
             </p>
-            <div className="flex justify-center items-center gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 mb-6 md:mb-8">
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-purple-500" />
-                <span className={currentTheme.textSecondary}>{t.hero.location}</span>
+                <MapPin className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
+                <span className={`text-sm md:text-base ${currentTheme.textSecondary}`}>{t.hero.location}</span>
               </div>
               <div className="flex items-center gap-2">
-                <MessageCircle className="w-5 h-5 text-purple-500" />
-                <span className={currentTheme.textSecondary}>{t.hero.discord}</span>
+                <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
+                <span className={`text-sm md:text-base ${currentTheme.textSecondary}`}>{t.hero.discord}</span>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-center gap-4 mb-12">
-            <Button size="lg" className={currentTheme.button} onClick={handleEmailContact}>
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-8 md:mb-12">
+            <Button size="lg" className={`${currentTheme.button} w-full sm:w-auto`} onClick={handleEmailContact}>
               <Mail className="w-4 h-4 mr-2" />
               {t.hero.contact}
             </Button>
-            <Button size="lg" variant="outline" className={currentTheme.buttonOutline}>
+            <Button
+              size="lg"
+              variant="outline"
+              className={`${currentTheme.buttonOutline} w-full sm:w-auto`}
+              onClick={() => window.open("https://github.com/AdryanMichel", "_blank")}
+            >
               <Github className="w-4 h-4 mr-2" />
               {t.hero.github}
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-            <div className={`${currentTheme.statCard} rounded-lg p-4`}>
-              <div className={`text-2xl font-bold ${currentTheme.text}`}>7+</div>
-              <div className={`text-sm ${currentTheme.textSecondary}`}>{t.hero.experience}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 max-w-2xl mx-auto">
+            <div className={`${currentTheme.statCard} rounded-lg p-3 md:p-4 border`}>
+              <div className={`text-xl md:text-2xl font-bold ${currentTheme.text}`}>7+</div>
+              <div className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>{t.hero.experience}</div>
             </div>
-            <div className={`${currentTheme.statCard} rounded-lg p-4`}>
-              <div className={`text-2xl font-bold ${currentTheme.text}`}>6</div>
-              <div className={`text-sm ${currentTheme.textSecondary}`}>{t.hero.languages}</div>
+            <div className={`${currentTheme.statCard} rounded-lg p-3 md:p-4 border`}>
+              <div className={`text-xl md:text-2xl font-bold ${currentTheme.text}`}>6</div>
+              <div className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>{t.hero.languages}</div>
             </div>
-            <div className={`${currentTheme.statCard} rounded-lg p-4 col-span-2 md:col-span-1`}>
-              <div className={`text-2xl font-bold ${currentTheme.text}`}>Full Stack</div>
-              <div className={`text-sm ${currentTheme.textSecondary}`}>{t.hero.developer}</div>
+            <div className={`${currentTheme.statCard} rounded-lg p-3 md:p-4 border`}>
+              <div className={`text-xl md:text-2xl font-bold ${currentTheme.text}`}>Full Stack</div>
+              <div className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>{t.hero.developer}</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-4">
-        <div className="container mx-auto">
-          <Card className={`${currentTheme.card} ${currentTheme.text}`}>
+      <section id="about" className="py-12 md:py-20 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <Card className={`${currentTheme.card} ${currentTheme.text} border`}>
             <CardHeader>
-              <CardTitle className="text-3xl text-center mb-4">{t.about.title}</CardTitle>
+              <CardTitle className="text-2xl md:text-3xl text-center mb-2 md:mb-4">{t.about.title}</CardTitle>
             </CardHeader>
-            <CardContent className="text-lg leading-relaxed text-center">
+            <CardContent className="text-base md:text-lg leading-relaxed text-center px-4 md:px-8">
               <p>{t.about.description}</p>
             </CardContent>
           </Card>
@@ -501,55 +549,91 @@ export default function Portfolio() {
       </section>
 
       {/* Education Section */}
-      <section id="education" className="py-20 px-4">
+      <section id="education" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
-          <h2 className={`text-4xl font-bold ${currentTheme.text} text-center mb-12`}>{t.education.title}</h2>
+          <h2 className={`text-2xl md:text-4xl font-bold ${currentTheme.text} text-center mb-8 md:mb-12`}>
+            {t.education.title}
+          </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Current Education */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <GraduationCap className="w-8 h-8 text-purple-500" />
-                  <div>
-                    <CardTitle className={`${currentTheme.text} text-xl`}>{t.education.school}</CardTitle>
-                    <CardDescription className={currentTheme.textSecondary}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 mb-4 md:mb-8">
+            {/* School Education */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
+              <CardHeader className="p-4 md:p-6">
+                <div className="flex items-start gap-3 mb-2 md:mb-4">
+                  <GraduationCap className="w-6 h-6 md:w-8 md:h-8 text-purple-500 flex-shrink-0 mt-1" />
+                  <div className="min-w-0">
+                    <CardTitle className={`${currentTheme.text} text-lg md:text-xl`}>{t.education.school}</CardTitle>
+                    <CardDescription className={`${currentTheme.textSecondary} text-sm`}>
                       <span className="inline-flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {t.education.period}
+                        <Calendar className="w-3 h-3 md:w-4 md:h-4" />
+                        {t.education.schoolPeriod}
                       </span>
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className={`font-semibold ${currentTheme.text} mb-2`}>{t.education.course}</h4>
-                    <p className={`${currentTheme.textSecondary} mb-2`}>{t.education.year}</p>
-                    <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${theme === "dark" ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"}`}
-                    >
-                      <BookOpen className="w-4 h-4 mr-1" />
-                      {t.education.status}
-                    </span>
-                  </div>
-                </div>
+              <CardContent className="p-4 md:p-6 pt-0">
+                <p className={`${currentTheme.textSecondary} mb-3 text-sm md:text-base`}>
+                  {t.education.schoolDescription}
+                </p>
+                <span
+                  className={`inline-flex items-center px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium ${theme === "dark" ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"}`}
+                >
+                  <Award className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                  {t.education.completed}
+                </span>
               </CardContent>
             </Card>
 
-            {/* Academic Achievements */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <Award className="w-8 h-8 text-yellow-500" />
-                  <CardTitle className={`${currentTheme.text} text-xl`}>{t.education.achievements}</CardTitle>
+            {/* Technical Course */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
+              <CardHeader className="p-4 md:p-6">
+                <div className="flex items-start gap-3 mb-2 md:mb-4">
+                  <BookOpen className="w-6 h-6 md:w-8 md:h-8 text-blue-500 flex-shrink-0 mt-1" />
+                  <div className="min-w-0">
+                    <CardTitle className={`${currentTheme.text} text-lg md:text-xl`}>{t.education.course}</CardTitle>
+                    <CardDescription className={`${currentTheme.textSecondary} text-sm`}>
+                      <span className="inline-flex items-center gap-1">
+                        <Calendar className="w-3 h-3 md:w-4 md:h-4" />
+                        {t.education.coursePeriod} - {t.education.courseSchool}
+                      </span>
+                    </CardDescription>
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
+              <CardContent className="p-4 md:p-6 pt-0">
+                <p className={`${currentTheme.textSecondary} mb-3 text-sm md:text-base`}>
+                  {t.education.courseDescription}
+                </p>
+                <span
+                  className={`inline-flex items-center px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium ${theme === "dark" ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"}`}
+                >
+                  <Award className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                  {t.education.completedDate}
+                </span>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Achievements and Languages */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
+            {/* Academic Achievements */}
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
+              <CardHeader className="p-4 md:p-6">
+                <div className="flex items-center gap-3 mb-2 md:mb-4">
+                  <Award className="w-6 h-6 md:w-8 md:h-8 text-yellow-500" />
+                  <CardTitle className={`${currentTheme.text} text-lg md:text-xl`}>
+                    {t.education.achievements}
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 md:p-6 pt-0">
+                <ul className="space-y-2 md:space-y-3">
                   {t.education.achievementsList.map((achievement, index) => (
-                    <li key={index} className={`flex items-start gap-2 ${currentTheme.textSecondary}`}>
+                    <li
+                      key={index}
+                      className={`flex items-start gap-2 ${currentTheme.textSecondary} text-sm md:text-base`}
+                    >
                       <div className="w-2 h-2 rounded-full bg-purple-500 mt-2 flex-shrink-0"></div>
                       <span>{achievement}</span>
                     </li>
@@ -559,27 +643,31 @@ export default function Portfolio() {
             </Card>
 
             {/* Languages */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <Languages className="w-8 h-8 text-blue-500" />
-                  <CardTitle className={`${currentTheme.text} text-xl`}>{t.education.languages}</CardTitle>
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
+              <CardHeader className="p-4 md:p-6">
+                <div className="flex items-center gap-3 mb-2 md:mb-4">
+                  <Languages className="w-6 h-6 md:w-8 md:h-8 text-blue-500" />
+                  <CardTitle className={`${currentTheme.text} text-lg md:text-xl`}>{t.education.languages}</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className={`${currentTheme.text} font-medium`}>{t.education.portuguese}</span>
+              <CardContent className="p-4 md:p-6 pt-0">
+                <div className="space-y-3 md:space-y-4">
+                  <div className="flex justify-between items-center flex-wrap gap-2">
+                    <span className={`${currentTheme.text} font-medium text-sm md:text-base`}>
+                      {t.education.portuguese}
+                    </span>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${theme === "dark" ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"}`}
+                      className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium ${theme === "dark" ? "bg-green-500/20 text-green-300" : "bg-green-100 text-green-700"}`}
                     >
                       {t.education.nativeLevel}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className={`${currentTheme.text} font-medium`}>{t.education.english}</span>
+                  <div className="flex justify-between items-center flex-wrap gap-2">
+                    <span className={`${currentTheme.text} font-medium text-sm md:text-base`}>
+                      {t.education.english}
+                    </span>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${theme === "dark" ? "bg-yellow-500/20 text-yellow-300" : "bg-yellow-100 text-yellow-700"}`}
+                      className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium ${theme === "dark" ? "bg-yellow-500/20 text-yellow-300" : "bg-yellow-100 text-yellow-700"}`}
                     >
                       {t.education.intermediateLevel}
                     </span>
@@ -592,30 +680,32 @@ export default function Portfolio() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-20 px-4">
+      <section id="skills" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
-          <h2 className={`text-4xl font-bold ${currentTheme.text} text-center mb-12`}>{t.skills.title}</h2>
+          <h2 className={`text-2xl md:text-4xl font-bold ${currentTheme.text} text-center mb-8 md:mb-12`}>
+            {t.skills.title}
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {skills.map((skill, index) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {skills.map((skill) => {
               const Icon = skill.icon
               const levelData = calculateLevel(skill.years, skill.name)
-              const levelColor = getLevelColor(levelData.level, theme)
+              const levelColor = getLevelColor(levelData.level)
               const levelTextColor = getLevelTextColor(levelData.level, theme)
 
               return (
                 <Card
                   key={skill.name}
-                  className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 transform hover:scale-105`}
+                  className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 transform hover:scale-105 border`}
                 >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center gap-3 mb-3">
+                  <CardHeader className="pb-2 md:pb-3 p-4 md:p-6">
+                    <div className="flex items-center gap-3 mb-2 md:mb-3">
                       <div className={`p-2 rounded-lg ${skill.color}`}>
-                        <Icon className="w-6 h-6 text-white" />
+                        <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                       </div>
-                      <div className="flex-1">
-                        <CardTitle className={`${currentTheme.text} text-xl`}>{skill.name}</CardTitle>
-                        <CardDescription className={currentTheme.textSecondary}>
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className={`${currentTheme.text} text-lg md:text-xl`}>{skill.name}</CardTitle>
+                        <CardDescription className={`${currentTheme.textSecondary} text-xs md:text-sm`}>
                           {skill.years} {skill.years === 1 ? t.skills.year : t.skills.years}
                         </CardDescription>
                       </div>
@@ -623,28 +713,32 @@ export default function Portfolio() {
 
                     {/* Level Badge */}
                     <div className="flex items-center justify-between">
-                      <span className={`px-3 py-1 rounded-full text-sm font-semibold ${levelColor} text-white`}>
+                      <span
+                        className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-semibold ${levelColor} text-white`}
+                      >
                         {t.skills.levels[levelData.level as keyof typeof t.skills.levels]}
                       </span>
-                      <span className={`text-sm font-medium ${levelTextColor}`}>{Math.round(levelData.progress)}%</span>
+                      <span className={`text-xs md:text-sm font-medium ${levelTextColor}`}>
+                        {Math.round(levelData.progress)}%
+                      </span>
                     </div>
                   </CardHeader>
 
-                  <CardContent>
+                  <CardContent className="p-4 md:p-6 pt-0">
                     {/* Level Progress Bar */}
-                    <div className="mb-3">
+                    <div className="mb-2 md:mb-3">
                       <div className="flex justify-between text-xs mb-1">
                         <span className={currentTheme.textSecondary}>
                           {t.skills.progress[levelData.level as keyof typeof t.skills.progress]}
                         </span>
                       </div>
-                      <div className={`w-full ${theme === "dark" ? "bg-white/20" : "bg-gray-300"} rounded-full h-3`}>
+                      <div
+                        className={`w-full ${theme === "dark" ? "bg-white/20" : "bg-gray-300"} rounded-full h-2 md:h-3`}
+                      >
                         <div
-                          className={`h-3 rounded-full ${levelColor} transition-all duration-1000 relative overflow-hidden`}
+                          className={`h-2 md:h-3 rounded-full ${levelColor} transition-all duration-1000`}
                           style={{ width: `${levelData.progress}%` }}
-                        >
-                          <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                        </div>
+                        />
                       </div>
                     </div>
 
@@ -652,21 +746,27 @@ export default function Portfolio() {
                     <div className="flex justify-between text-xs">
                       <div className="flex flex-col items-center">
                         <div
-                          className={`w-2 h-2 rounded-full ${levelData.level === "junior" ? levelColor : theme === "dark" ? "bg-green-500" : "bg-green-600"}`}
-                        ></div>
-                        <span className={`mt-1 ${currentTheme.textMuted}`}>{t.skills.levels.junior}</span>
+                          className={`w-2 h-2 rounded-full ${levelData.level === "junior" ? levelColor : "bg-green-500"}`}
+                        />
+                        <span className={`mt-1 ${currentTheme.textMuted} text-[10px] md:text-xs`}>
+                          {t.skills.levels.junior}
+                        </span>
                       </div>
                       <div className="flex flex-col items-center">
                         <div
-                          className={`w-2 h-2 rounded-full ${levelData.level === "pleno" ? levelColor : levelData.level === "senior" ? (theme === "dark" ? "bg-green-500" : "bg-green-600") : (theme === "dark" ? "bg-white/30" : "bg-gray-400")}`}
-                        ></div>
-                        <span className={`mt-1 ${currentTheme.textMuted}`}>{t.skills.levels.pleno}</span>
+                          className={`w-2 h-2 rounded-full ${levelData.level === "pleno" ? levelColor : levelData.level === "senior" ? "bg-green-500" : theme === "dark" ? "bg-white/30" : "bg-gray-400"}`}
+                        />
+                        <span className={`mt-1 ${currentTheme.textMuted} text-[10px] md:text-xs`}>
+                          {t.skills.levels.pleno}
+                        </span>
                       </div>
                       <div className="flex flex-col items-center">
                         <div
                           className={`w-2 h-2 rounded-full ${levelData.level === "senior" ? levelColor : theme === "dark" ? "bg-white/30" : "bg-gray-400"}`}
-                        ></div>
-                        <span className={`mt-1 ${currentTheme.textMuted}`}>{t.skills.levels.senior}</span>
+                        />
+                        <span className={`mt-1 ${currentTheme.textMuted} text-[10px] md:text-xs`}>
+                          {t.skills.levels.senior}
+                        </span>
                       </div>
                     </div>
                   </CardContent>
@@ -676,39 +776,33 @@ export default function Portfolio() {
           </div>
 
           {/* Level Legend */}
-          <div className="mt-12 max-w-4xl mx-auto">
-            <div className={`${currentTheme.card} rounded-lg p-6`}>
-              <h3 className={`text-xl font-semibold ${currentTheme.text} mb-4 text-center`}>
+          <div className="mt-8 md:mt-12 max-w-4xl mx-auto">
+            <div className={`${currentTheme.card} rounded-lg p-4 md:p-6 border`}>
+              <h3 className={`text-lg md:text-xl font-semibold ${currentTheme.text} mb-3 md:mb-4 text-center`}>
                 {language === "pt" ? "Legenda dos Níveis" : "Level Legend"}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
                 <div className="text-center">
-                  <div
-                    className={`inline-block px-4 py-2 rounded-full ${theme === "dark" ? "bg-blue-500" : "bg-blue-600"} text-white font-semibold mb-2`}
-                  >
+                  <div className="inline-block px-3 md:px-4 py-1 md:py-2 rounded-full bg-blue-500 text-white font-semibold mb-1 md:mb-2 text-sm md:text-base">
                     {t.skills.levels.junior}
                   </div>
-                  <p className={`text-sm ${currentTheme.textSecondary}`}>
+                  <p className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>
                     {language === "pt" ? "0-2 anos de experiência" : "0-2 years of experience"}
                   </p>
                 </div>
                 <div className="text-center">
-                  <div
-                    className={`inline-block px-4 py-2 rounded-full ${theme === "dark" ? "bg-yellow-500" : "bg-yellow-600"} text-white font-semibold mb-2`}
-                  >
+                  <div className="inline-block px-3 md:px-4 py-1 md:py-2 rounded-full bg-yellow-500 text-white font-semibold mb-1 md:mb-2 text-sm md:text-base">
                     {t.skills.levels.pleno}
                   </div>
-                  <p className={`text-sm ${currentTheme.textSecondary}`}>
+                  <p className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>
                     {language === "pt" ? "2-5 anos de experiência" : "2-5 years of experience"}
                   </p>
                 </div>
                 <div className="text-center">
-                  <div
-                    className={`inline-block px-4 py-2 rounded-full ${theme === "dark" ? "bg-green-500" : "bg-green-600"} text-white font-semibold mb-2`}
-                  >
+                  <div className="inline-block px-3 md:px-4 py-1 md:py-2 rounded-full bg-green-500 text-white font-semibold mb-1 md:mb-2 text-sm md:text-base">
                     {t.skills.levels.senior}
                   </div>
-                  <p className={`text-sm ${currentTheme.textSecondary}`}>
+                  <p className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>
                     {language === "pt" ? "5+ anos de experiência" : "5+ years of experience"}
                   </p>
                 </div>
@@ -719,29 +813,31 @@ export default function Portfolio() {
       </section>
 
       {/* Technologies Section */}
-      <section id="technologies" className="py-20 px-4">
+      <section id="technologies" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
-          <h2 className={`text-4xl font-bold ${currentTheme.text} text-center mb-12`}>{t.technologies.title}</h2>
+          <h2 className={`text-2xl md:text-4xl font-bold ${currentTheme.text} text-center mb-8 md:mb-12`}>
+            {t.technologies.title}
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {/* Frontend */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <CardTitle className={`${currentTheme.text} text-lg flex items-center gap-2`}>
-                  <Layers className="w-6 h-6 text-blue-500" />
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className={`${currentTheme.text} text-base md:text-lg flex items-center gap-2`}>
+                  <Layers className="w-5 h-5 md:w-6 md:h-6 text-blue-500" />
                   {t.technologies.frontend}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-4 md:p-6 pt-0">
+                <div className="space-y-2 md:space-y-3">
                   {technologies.frontend.map((tech, index) => {
                     const Icon = tech.icon
                     return (
-                      <div key={index} className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${tech.color}`}>
-                          <Icon className="w-4 h-4 text-white" />
+                      <div key={index} className="flex items-center gap-2 md:gap-3">
+                        <div className={`p-1.5 md:p-2 rounded-lg ${tech.color}`}>
+                          <Icon className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className={currentTheme.text}>{tech.name}</span>
+                        <span className={`${currentTheme.text} text-sm md:text-base`}>{tech.name}</span>
                       </div>
                     )
                   })}
@@ -750,23 +846,23 @@ export default function Portfolio() {
             </Card>
 
             {/* Backend */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <CardTitle className={`${currentTheme.text} text-lg flex items-center gap-2`}>
-                  <Settings className="w-6 h-6 text-green-500" />
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className={`${currentTheme.text} text-base md:text-lg flex items-center gap-2`}>
+                  <Settings className="w-5 h-5 md:w-6 md:h-6 text-green-500" />
                   {t.technologies.backend}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-4 md:p-6 pt-0">
+                <div className="space-y-2 md:space-y-3">
                   {technologies.backend.map((tech, index) => {
                     const Icon = tech.icon
                     return (
-                      <div key={index} className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${tech.color}`}>
-                          <Icon className="w-4 h-4 text-white" />
+                      <div key={index} className="flex items-center gap-2 md:gap-3">
+                        <div className={`p-1.5 md:p-2 rounded-lg ${tech.color}`}>
+                          <Icon className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className={currentTheme.text}>{tech.name}</span>
+                        <span className={`${currentTheme.text} text-sm md:text-base`}>{tech.name}</span>
                       </div>
                     )
                   })}
@@ -775,23 +871,23 @@ export default function Portfolio() {
             </Card>
 
             {/* Tools */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <CardTitle className={`${currentTheme.text} text-lg flex items-center gap-2`}>
-                  <GitBranch className="w-6 h-6 text-orange-500" />
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className={`${currentTheme.text} text-base md:text-lg flex items-center gap-2`}>
+                  <GitBranch className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />
                   {t.technologies.tools}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-4 md:p-6 pt-0">
+                <div className="space-y-2 md:space-y-3">
                   {technologies.tools.map((tech, index) => {
                     const Icon = tech.icon
                     return (
-                      <div key={index} className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${tech.color}`}>
-                          <Icon className="w-4 h-4 text-white" />
+                      <div key={index} className="flex items-center gap-2 md:gap-3">
+                        <div className={`p-1.5 md:p-2 rounded-lg ${tech.color}`}>
+                          <Icon className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className={currentTheme.text}>{tech.name}</span>
+                        <span className={`${currentTheme.text} text-sm md:text-base`}>{tech.name}</span>
                       </div>
                     )
                   })}
@@ -800,23 +896,23 @@ export default function Portfolio() {
             </Card>
 
             {/* Databases */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <CardTitle className={`${currentTheme.text} text-lg flex items-center gap-2`}>
-                  <Database className="w-6 h-6 text-purple-500" />
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className={`${currentTheme.text} text-base md:text-lg flex items-center gap-2`}>
+                  <Database className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
                   {t.technologies.databases}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-4 md:p-6 pt-0">
+                <div className="space-y-2 md:space-y-3">
                   {technologies.databases.map((tech, index) => {
                     const Icon = tech.icon
                     return (
-                      <div key={index} className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${tech.color}`}>
-                          <Icon className="w-4 h-4 text-white" />
+                      <div key={index} className="flex items-center gap-2 md:gap-3">
+                        <div className={`p-1.5 md:p-2 rounded-lg ${tech.color}`}>
+                          <Icon className="w-3 h-3 md:w-4 md:h-4 text-white" />
                         </div>
-                        <span className={currentTheme.text}>{tech.name}</span>
+                        <span className={`${currentTheme.text} text-sm md:text-base`}>{tech.name}</span>
                       </div>
                     )
                   })}
@@ -828,34 +924,42 @@ export default function Portfolio() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-20 px-4">
+      <section id="projects" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
-          <h2 className={`text-4xl font-bold ${currentTheme.text} text-center mb-12`}>{t.projects.title}</h2>
+          <h2 className={`text-2xl md:text-4xl font-bold ${currentTheme.text} text-center mb-8 md:mb-12`}>
+            {t.projects.title}
+          </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 mb-8 md:mb-12">
             {/* GitHub Projects */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <Github className="w-8 h-8 text-purple-500" />
-                  <CardTitle className={`${currentTheme.text} text-2xl`}>{t.projects.github}</CardTitle>
+            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border`}>
+              <CardHeader className="p-4 md:p-6">
+                <div className="flex items-center gap-3 mb-2 md:mb-4">
+                  <Github className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
+                  <CardTitle className={`${currentTheme.text} text-xl md:text-2xl`}>{t.projects.github}</CardTitle>
                 </div>
-                <CardDescription className={currentTheme.textSecondary}>{t.projects.githubDescription}</CardDescription>
+                <CardDescription className={`${currentTheme.textSecondary} text-sm md:text-base`}>
+                  {t.projects.githubDescription}
+                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <CardContent className="p-4 md:p-6 pt-0">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
                   {githubProjects.map((project, index) => (
                     <div
                       key={index}
-                      className={`p-4 rounded-lg ${theme === "dark" ? "bg-white/5" : "bg-gray-100"} border ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
+                      className={`p-3 md:p-4 rounded-lg ${theme === "dark" ? "bg-white/5" : "bg-gray-100"} border ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
                     >
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className={`w-3 h-3 rounded-full ${project.color}`}></div>
-                        <h4 className={`font-semibold ${currentTheme.text}`}>{project.name}</h4>
+                      <div className="flex items-center gap-2 mb-1 md:mb-2">
+                        <div className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full ${project.color}`}></div>
+                        <h4 className={`font-semibold ${currentTheme.text} text-sm md:text-base truncate`}>
+                          {project.name}
+                        </h4>
                       </div>
-                      <p className={`text-sm ${currentTheme.textSecondary} mb-2`}>{project.description}</p>
+                      <p className={`text-xs md:text-sm ${currentTheme.textSecondary} mb-1 md:mb-2`}>
+                        {project.description}
+                      </p>
                       <span
-                        className={`text-xs px-2 py-1 rounded ${theme === "dark" ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}
+                        className={`text-xs px-2 py-0.5 rounded ${theme === "dark" ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}
                       >
                         {project.language}
                       </span>
@@ -863,7 +967,7 @@ export default function Portfolio() {
                   ))}
                 </div>
                 <Button
-                  className={currentTheme.button}
+                  className={`w-full ${currentTheme.button}`}
                   onClick={() => window.open("https://github.com/AdryanMichel", "_blank")}
                 >
                   <Github className="w-4 h-4 mr-2" />
@@ -873,128 +977,163 @@ export default function Portfolio() {
             </Card>
 
             {/* Roblox Portfolio */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <Gamepad2 className="w-8 h-8 text-red-500" />
-                  <CardTitle className={`${currentTheme.text} text-2xl`}>{t.projects.roblox}</CardTitle>
+            <Card
+              className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300 border border-red-500/30`}
+            >
+              <CardHeader className="p-4 md:p-6">
+                <div className="flex items-center gap-3 mb-2 md:mb-4">
+                  <Gamepad2 className="w-6 h-6 md:w-8 md:h-8 text-red-500" />
+                  <CardTitle className={`${currentTheme.text} text-xl md:text-2xl`}>{t.projects.roblox}</CardTitle>
                 </div>
-                <CardDescription className={currentTheme.textSecondary}>{t.projects.robloxDescription}</CardDescription>
+                <CardDescription className={`${currentTheme.textSecondary} text-sm md:text-base`}>
+                  {t.projects.robloxDescription}
+                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div
-                  className={`p-6 rounded-lg ${theme === "dark" ? "bg-gradient-to-br from-red-500/10 to-orange-500/10" : "bg-gradient-to-br from-red-50 to-orange-50"} border ${theme === "dark" ? "border-red-500/20" : "border-red-200"} mb-6`}
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
-                      <Gamepad2 className="w-6 h-6 text-white" />
+              <CardContent className="p-4 md:p-6 pt-0">
+                <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
+                  <div
+                    className={`p-3 md:p-4 rounded-lg ${theme === "dark" ? "bg-red-500/10" : "bg-red-50"} border ${theme === "dark" ? "border-red-500/20" : "border-red-200"}`}
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <Code className="w-4 h-4 md:w-5 md:h-5 text-red-500" />
+                      <span className={`font-semibold ${currentTheme.text} text-sm md:text-base`}>Luau Developer</span>
                     </div>
-                    <div>
-                      <h4 className={`font-bold ${currentTheme.text}`}>Portfolio Roblox</h4>
-                      <p className={`text-sm ${currentTheme.textSecondary}`}>7 anos de experiência em Luau</p>
-                    </div>
+                    <p className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>
+                      {language === "pt"
+                        ? "7 anos de experiência em desenvolvimento Roblox"
+                        : "7 years of experience in Roblox development"}
+                    </p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className={`text-center p-3 rounded ${theme === "dark" ? "bg-white/5" : "bg-white/50"}`}>
-                      <div className={`text-xl font-bold ${currentTheme.text}`}>7+</div>
-                      <div className={`text-xs ${currentTheme.textSecondary}`}>Anos</div>
+                  <div
+                    className={`p-3 md:p-4 rounded-lg ${theme === "dark" ? "bg-red-500/10" : "bg-red-50"} border ${theme === "dark" ? "border-red-500/20" : "border-red-200"}`}
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="w-4 h-4 md:w-5 md:h-5 text-red-500" />
+                      <span className={`font-semibold ${currentTheme.text} text-sm md:text-base`}>
+                        {language === "pt" ? "Especialista" : "Specialist"}
+                      </span>
                     </div>
-                    <div className={`text-center p-3 rounded ${theme === "dark" ? "bg-white/5" : "bg-white/50"}`}>
-                      <div className={`text-xl font-bold ${currentTheme.text}`}>Luau</div>
-                      <div className={`text-xs ${currentTheme.textSecondary}`}>Especialidade</div>
-                    </div>
+                    <p className={`text-xs md:text-sm ${currentTheme.textSecondary}`}>
+                      {language === "pt"
+                        ? "Scripting avançado e desenvolvimento de jogos"
+                        : "Advanced scripting and game development"}
+                    </p>
                   </div>
                 </div>
                 <Button
-                  className="bg-red-600 hover:bg-red-700 text-white"
+                  className="w-full bg-red-600 hover:bg-red-700"
                   onClick={() => window.open("https://michelportfolio.carrd.co/", "_blank")}
                 >
-                  <Globe className="w-4 h-4 mr-2" />
+                  <Gamepad2 className="w-4 h-4 mr-2" />
                   {t.projects.viewProject}
                 </Button>
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
 
-      {/* Goals Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <h2 className={`text-4xl font-bold ${currentTheme.text} text-center mb-12`}>{t.goals.title}</h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Short Term Goals */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <Target className="w-8 h-8 text-blue-500" />
-                  <CardTitle className={`${currentTheme.text} text-xl`}>{t.goals.shortTerm}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
+          {/* Professional Goals */}
+          <div className={`${currentTheme.card} rounded-lg p-4 md:p-8 border`}>
+            <h3 className={`text-xl md:text-2xl font-bold ${currentTheme.text} text-center mb-6 md:mb-8`}>
+              {t.goals.title}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              <div>
+                <h4
+                  className={`text-lg md:text-xl font-semibold ${currentTheme.text} mb-3 md:mb-4 flex items-center gap-2`}
+                >
+                  <Target className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
+                  {t.goals.shortTerm}
+                </h4>
+                <ul className="space-y-2 md:space-y-3">
                   {t.goals.shortTermGoals.map((goal, index) => (
-                    <li key={index} className={`flex items-start gap-2 ${currentTheme.textSecondary}`}>
+                    <li
+                      key={index}
+                      className={`flex items-start gap-2 ${currentTheme.textSecondary} text-sm md:text-base`}
+                    >
                       <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
                       <span>{goal}</span>
                     </li>
                   ))}
                 </ul>
-              </CardContent>
-            </Card>
-
-            {/* Long Term Goals */}
-            <Card className={`${currentTheme.card} ${currentTheme.cardHover} transition-all duration-300`}>
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <Target className="w-8 h-8 text-green-500" />
-                  <CardTitle className={`${currentTheme.text} text-xl`}>{t.goals.longTerm}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
+              </div>
+              <div>
+                <h4
+                  className={`text-lg md:text-xl font-semibold ${currentTheme.text} mb-3 md:mb-4 flex items-center gap-2`}
+                >
+                  <Target className="w-4 h-4 md:w-5 md:h-5 text-green-500" />
+                  {t.goals.longTerm}
+                </h4>
+                <ul className="space-y-2 md:space-y-3">
                   {t.goals.longTermGoals.map((goal, index) => (
-                    <li key={index} className={`flex items-start gap-2 ${currentTheme.textSecondary}`}>
+                    <li
+                      key={index}
+                      className={`flex items-start gap-2 ${currentTheme.textSecondary} text-sm md:text-base`}
+                    >
                       <div className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0"></div>
                       <span>{goal}</span>
                     </li>
                   ))}
                 </ul>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <h2 className={`text-4xl font-bold ${currentTheme.text} mb-8`}>{t.contact.title}</h2>
-          <p className={`text-xl ${currentTheme.textSecondary} mb-12 max-w-2xl mx-auto`}>{t.contact.description}</p>
+      <section id="contact" className="py-12 md:py-20 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <Card className={`${currentTheme.card} ${currentTheme.text} border`}>
+            <CardHeader className="text-center p-4 md:p-6">
+              <CardTitle className="text-2xl md:text-3xl mb-2 md:mb-4">{t.contact.title}</CardTitle>
+              <CardDescription className={`${currentTheme.textSecondary} text-sm md:text-lg px-2`}>
+                {t.contact.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-4 md:p-6">
+              <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-6 md:mb-8">
+                <Button size="lg" className={`${currentTheme.button} w-full sm:w-auto`} onClick={handleEmailContact}>
+                  <Mail className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                  {t.contact.email}
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className={`${currentTheme.buttonOutline} w-full sm:w-auto`}
+                  onClick={() => window.open("https://github.com/AdryanMichel", "_blank")}
+                >
+                  <Github className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                  GitHub
+                </Button>
+              </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button size="lg" className={`${currentTheme.button} min-w-[200px]`} onClick={handleEmailContact}>
-              <Mail className="w-5 h-5 mr-2" />
-              {t.contact.email}
-            </Button>
-            <Button size="lg" variant="outline" className={`${currentTheme.buttonOutline} min-w-[200px]`}>
-              <MessageCircle className="w-5 h-5 mr-2" />
-              {t.contact.discord}
-            </Button>
-          </div>
-
-          <div className={`mt-8 p-4 ${currentTheme.card} rounded-lg max-w-md mx-auto`}>
-            <p className={`${currentTheme.textSecondary} text-sm mb-2`}>Email profissional:</p>
-            <p className={`${currentTheme.text} font-mono`}>adryanmichel.profissional@gmail.com</p>
-          </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 max-w-2xl mx-auto">
+                <div
+                  className={`p-3 md:p-4 rounded-lg ${theme === "dark" ? "bg-white/5" : "bg-gray-100"} text-center border ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
+                >
+                  <Mail className="w-5 h-5 md:w-6 md:h-6 text-purple-500 mx-auto mb-2" />
+                  <p className={`${currentTheme.text} font-medium text-xs md:text-sm break-all`}>
+                    adryanmichel.profissional@gmail.com
+                  </p>
+                </div>
+                <div
+                  className={`p-3 md:p-4 rounded-lg ${theme === "dark" ? "bg-white/5" : "bg-gray-100"} text-center border ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
+                >
+                  <MessageCircle className="w-5 h-5 md:w-6 md:h-6 text-purple-500 mx-auto mb-2" />
+                  <p className={`${currentTheme.text} font-medium text-xs md:text-sm`}>{t.contact.discord}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className={`py-8 px-4 border-t ${theme === "dark" ? "border-white/20" : "border-gray-200"}`}>
+      <footer className={`py-6 md:py-8 px-4 border-t ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}>
         <div className="container mx-auto text-center">
-          <p className={currentTheme.textMuted}>© 2024 Adryan Michel Silveira Evangelista. {t.footer.rights}</p>
+          <p className={`${currentTheme.textSecondary} text-sm md:text-base`}>
+            © {new Date().getFullYear()} Adryan Michel. {t.footer.rights}
+          </p>
         </div>
       </footer>
     </div>
