@@ -30,6 +30,7 @@ import {
   X,
   ExternalLink,
 } from "lucide-react"
+import { PortfolioChatbot } from "@/components/portfolio-chatbot"
 
 type Language = "pt" | "en"
 type Theme = "dark" | "light"
@@ -1289,6 +1290,9 @@ export default function Portfolio() {
           </p>
         </div>
       </footer>
+
+      {/* AI Chatbot */}
+      <PortfolioChatbot language={language} />
     </div>
   )
 }
