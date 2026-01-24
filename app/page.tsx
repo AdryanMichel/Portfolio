@@ -125,14 +125,14 @@ const translations = {
       shortTerm: "Curto Prazo",
       longTerm: "Longo Prazo",
       shortTermGoals: [
-        "Concluir o curso de Desenvolvimento de Sistemas",
-        "Conseguir primeira oportunidade como desenvolvedor",
-        "Aprofundar conhecimentos em React e Node.js",
+        "Conseguir primeira oportunidade como desenvolvedor Full Stack",
+        "Dominar TypeScript e arquiteturas escaláveis",
+        "Aprofundar conhecimentos em Docker e CI/CD",
       ],
       longTermGoals: [
-        "Tornar-se desenvolvedor Full Stack sênior",
-        "Liderar projetos de desenvolvimento",
-        "Contribuir para projetos open source",
+        "Tornar-se desenvolvedor Full Stack sênior especialista",
+        "Dominar arquitetura de microsserviços e cloud (AWS)",
+        "Liderar projetos e contribuir para open source",
       ],
     },
     contact: {
@@ -236,14 +236,14 @@ const translations = {
       shortTerm: "Short Term",
       longTerm: "Long Term",
       shortTermGoals: [
-        "Complete Systems Development course",
-        "Get first opportunity as a developer",
-        "Deepen knowledge in React and Node.js",
+        "Get first opportunity as a Full Stack developer",
+        "Master TypeScript and scalable architectures",
+        "Deepen knowledge in Docker and CI/CD",
       ],
       longTermGoals: [
-        "Become a senior Full Stack developer",
-        "Lead development projects",
-        "Contribute to open source projects",
+        "Become a senior Full Stack developer specialist",
+        "Master microservices architecture and cloud (AWS)",
+        "Lead projects and contribute to open source",
       ],
     },
     contact: {
@@ -444,23 +444,31 @@ export default function Portfolio() {
   const technologies = {
     frontend: [
       { name: "React", icon: Layers, color: "bg-blue-500" },
-      { name: "HTML5", icon: Globe, color: "bg-orange-500" },
-      { name: "CSS3", icon: Globe, color: "bg-blue-600" },
+      { name: "Next.js", icon: Layers, color: "bg-black" },
+      { name: "TypeScript", icon: Code, color: "bg-blue-600" },
       { name: "Tailwind CSS", icon: Layers, color: "bg-cyan-500" },
+      { name: "HTML5", icon: Globe, color: "bg-orange-500" },
+      { name: "CSS3", icon: Globe, color: "bg-blue-400" },
     ],
     backend: [
       { name: "Node.js", icon: Settings, color: "bg-green-600" },
       { name: "Express", icon: Settings, color: "bg-gray-600" },
       { name: "Python", icon: Code, color: "bg-yellow-600" },
+      { name: "REST APIs", icon: Globe, color: "bg-purple-600" },
     ],
     tools: [
       { name: "Git", icon: GitBranch, color: "bg-orange-600" },
       { name: "GitHub", icon: Github, color: "bg-gray-800" },
+      { name: "GitHub Actions", icon: Settings, color: "bg-blue-500" },
       { name: "VS Code", icon: Code, color: "bg-blue-700" },
+      { name: "Docker", icon: Layers, color: "bg-blue-500" },
+      { name: "Vercel", icon: Globe, color: "bg-black" },
     ],
     databases: [
       { name: "MySQL", icon: Database, color: "bg-blue-800" },
+      { name: "PostgreSQL", icon: Database, color: "bg-blue-600" },
       { name: "MongoDB", icon: Database, color: "bg-green-700" },
+      { name: "Redis", icon: Database, color: "bg-red-600" },
     ],
   }
 
